@@ -7,6 +7,7 @@ const userModel = new Users();
 // Disconnect
 router.get("/disconnect", authorizeUser, function (req, res, next) {
   if (!req.session) return res.status(404).end();
+  console.log(req.session.idUser);
   req.session = null;
   return res.status(200).end();
 });
@@ -36,7 +37,7 @@ router.put('/:idUser', authorizeUser, function(req, res, next) {
   ) 
     return res.status(400).end();
 
-  if (req.params.idUser != req.session.idUser && !req.user.isAdmin) return res.status(401).end();
+  if (req.params.idUser !== req.session.idUser && !req.user.isAdmin) return res.status(401).end();
 
   const updatedUser = userModel.updateOne(req.params.idUser, req.body);
   if (!updatedUser) return res.status(404).end();

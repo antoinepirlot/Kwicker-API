@@ -1,22 +1,20 @@
-### Inits
-@defaultDomain = http://localhost:3000
 
 
 ### login() as admin
 # @name admin
-POST {{defaultDomain}}/users/login
+POST {{host}}/users/login
 Content-Type: application/json
 
 {
     "email":"francois.bardijn@student.vinci.be",
     "password":"admin"
 }
-### Inits
-@adminToken = {{admin.response.body.token}}
+
+> {% client.global.set("adminToken", response.body.token);%}
 
 ### login() as user
 # @name user
-POST {{defaultDomain}}/users/login
+POST {{host}}/users/login
 Content-Type: application/json
 
 {
@@ -24,20 +22,22 @@ Content-Type: application/json
     "password":"user"
 }
 
-### Inits
-@userToken = {{user.response.body.token}}
+> {% client.global.set("userToken", response.body.token);%}
 
 ### getAll()
-GET {{defaultDomain}}/users
+GET {{host}}/users
 Authorization: {{adminToken}}
 
 
 ### getOne()
-GET {{defaultDomain}}/users/4
+GET {{host}}/users/2
+Authorization: {{userToken}}
+
 
 ### updateOne()
-PUT {{defaultDomain}}/users/3
+PUT {{host}}/users/1
 Content-Type: application/json
+Authorization: {{userToken}}
 
 {
     "forename":"Test",
@@ -47,7 +47,7 @@ Content-Type: application/json
 }
 
 ### login()
-POST {{defaultDomain}}/users/login
+POST {{host}}/users/login
 Content-Type: application/json
 
 {
@@ -57,7 +57,7 @@ Content-Type: application/json
 
 
 ### register()
-POST {{defaultDomain}}/users/register
+POST {{host}}/users/register
 Content-Type: application/json
 
 {
@@ -69,7 +69,7 @@ Content-Type: application/json
 }
 
 ### login()
-POST {{defaultDomain}}/users/login
+POST {{host}}/users/login
 Content-Type: application/json
 
 {
@@ -78,4 +78,4 @@ Content-Type: application/json
 }
 
 ### disconnect()
-GET {{defaultDomain}}/users/disconnect
+GET {{host}}/users/disconnect

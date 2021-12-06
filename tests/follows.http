@@ -1,0 +1,11 @@
+### getFollower()
+GET {{host}}/follows/followers/1
+Authorization: {{userToken}}
+
+### getFollowed()
+GET {{host}}/follows/followeds/1
+Authorization: {{userToken}}
+
+### addOne()
+POST {{host}}/follows/3
+Authorization: {{userToken}}

@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieSession = require("cookie-session");
 
 var userRouter = require('./routes/user');
-//var reportRouter = require('./routes/report');
+var followRouter = require('./routes/follow');
 
 var app = express();
 
@@ -27,6 +27,6 @@ app.use(
 );
 
 app.use('/users', userRouter);
-//app.use('/reports', reportRouter);
+app.use('/follows', followRouter);
 
 module.exports = app;
