@@ -4,9 +4,11 @@ const { Users}  = require('../models/users');
 const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
 const userModel = new Users();
 
+// Disconnect
 router.get("/disconnect", authorizeUser, function (req, res, next) {
+  if (!req.session) return res.status(404).end();
   req.session = null;
-  res.status(200).end();
+  return res.status(200).end();
 });
 
 // getAll()
@@ -17,7 +19,6 @@ router.get('/', authorizeAdmin, function(req, res, next) {
 // getOne()
 router.get('/:idUser', authorizeUser, function(req, res, next) {
   const user = userModel.getOne(req.params.idUser);
-  // const user = userModel.getOne(req.params.idUser);
 
   if (!user) return res.status(404).end();
 
@@ -30,14 +31,15 @@ router.put('/:idUser', authorizeUser, function(req, res, next) {
     (req.body.forename && !req.body.forename.trim()) ||
     (req.body.lastname && !req.body.lastname.trim()) ||
     (req.body.email && !req.body.email.trim()) ||
+    (req.body.username && !req.body.username.trim()) ||
     (req.body.password && !req.body.password.trim())
   ) 
     return res.status(400).end();
 
   if (req.params.idUser != req.session.idUser && !req.user.isAdmin) return res.status(401).end();
-  
+
   const updatedUser = userModel.updateOne(req.params.idUser, req.body);
-  if (!updatedUser) res.status(404).end();
+  if (!updatedUser) return res.status(404).end();
   return res.json(updatedUser);
 });
 
@@ -48,6 +50,7 @@ router.post("/register", async function (req, res, next) {
     (req.body.forename && !req.body.forename.trim()) ||
     (req.body.lastname && !req.body.lastname.trim()) ||
     (req.body.email && !req.body.email.trim()) ||
+    (req.body.username && !req.body.username.trim()) ||
     (req.body.password && !req.body.password.trim())
   )
     return res.status(400).end();
@@ -56,6 +59,7 @@ router.post("/register", async function (req, res, next) {
     req.body.forename,
     req.body.lastname,
     req.body.email,
+    req.body.username,
     req.body.password
   );
   if (!authenticatedUser) return res.status(409).end();

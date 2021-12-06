@@ -33,10 +33,10 @@ Authorization: {{adminToken}}
 
 
 ### getOne()
-GET {{defaultDomain}}/users/1
+GET {{defaultDomain}}/users/4
 
 ### updateOne()
-PUT {{defaultDomain}}/users/1
+PUT {{defaultDomain}}/users/3
 Content-Type: application/json
 
 {
@@ -61,10 +61,20 @@ POST {{defaultDomain}}/users/register
 Content-Type: application/json
 
 {
-    "forename":"a",
-    "lastname":"Faeron",
-    "email":"a.feon@student.vini.be",
-    "password":"user"
+    "forename":"Frederic",
+    "lastname":"Bardijn",
+    "email":"frederic.barijn@student.vini.be",
+    "username": "fbb", 
+    "password":"mdp"
+}
+
+### login()
+POST {{defaultDomain}}/users/login
+Content-Type: application/json
+
+{
+    "email":"frederic.barijn@student.vini.be",
+    "password":"mdp"
 }
 
 ### disconnect()

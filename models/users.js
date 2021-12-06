@@ -12,18 +12,22 @@ const defaultItems = [
     forename: "François",
     lastname: "Bardijn",
     email: "francois.bardijn@student.vinci.be",
+    username: "fb",
     password: "$2b$10$RqcgWQT/Irt9MQC8UfHmjuGCrQkQNeNcU6UtZURdSB/fyt6bMWARa", // "admin",
     isActive: true,
-    isAdmin: true
+    isAdmin: true,
+    creationDate: Date.now()
   },
   {
     idUser: 2,
     forename: "Guillaume",
     lastname: "Feron",
+    username: "gf",
     email: "guillaume.feron@student.vinci.be",
     password: "$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC", // "user",
     isActive: true,
-    isAdmin: false
+    isAdmin: false,
+    creationDate: Date.now()
   }
   /*
   {
@@ -73,14 +77,19 @@ class Users {
   async addOne(body) {
     const items = parse(this.jsonDbPath, this.defaultItems);
     const hashedPassword = await bcrypt.hash(body.password, saltRounds);
+
+    if (items.findIndex(u => u.email == body.email || u.username == body.username) != -1) return;
+
     const newitem = {
       idUser: this.getNextId(),
       forename: body.forename,
       lastname: body.lastname,
       email: body.email,
+      username: body.username,
       password: hashedPassword,
       isActive: true,
       isAdmin: false,
+      creationDate: Date.now()
     };
     items.push(newitem);
     serialize(this.jsonDbPath, items);
@@ -128,11 +137,13 @@ class Users {
     return authenticatedUser;
   }
 
-  register(forename, lastname, email, password) {
+  async register(forename, lastname, email, username, password) {
     const userFound = this.getOneByEmail(email);
     if (userFound) return;
 
-    const newUser = this.addOne({ forename: forename, lastname: lastname, email: email, password: password });
+    const newUser = await this.addOne({ forename: forename, lastname: lastname, email: email, username: username, password: password });
+
+    if (!newUser) return;
 
     const authenticatedUser = {
       idUser: newUser.idUser,

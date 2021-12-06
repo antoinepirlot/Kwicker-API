@@ -11,7 +11,7 @@ const authorizeAdmin = (req, res, next) => {
     const decoded = jwt.verify(token, jwtSecret);
     const userFound = userModel.getOne(decoded.idUser);
     if (!userFound) return res.status(403).end();
-    if (!userFound.isAdmin) res.status(403).end();
+    if (!userFound.isAdmin) return res.status(403).end();
     req.user = userFound;
     next();
   } catch (err) {
@@ -22,12 +22,10 @@ const authorizeAdmin = (req, res, next) => {
 
 const authorizeUser = (req, res, next) => {
   let token = req.session.token;
-  console.log(token);
   if (!token) return res.status(401).end();
   try {
     const decoded = jwt.verify(token, jwtSecret);
     const userFound = userModel.getOne(decoded.idUser);
-    console.log(userFound);
     if (!userFound) return res.status(403).end();
     req.user = userFound;
     next();
