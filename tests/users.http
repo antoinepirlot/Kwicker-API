@@ -1,0 +1,71 @@
+### Inits
+@defaultDomain = http://localhost:3000
+
+
+### login() as admin
+# @name admin
+POST {{defaultDomain}}/users/login
+Content-Type: application/json
+
+{
+    "email":"francois.bardijn@student.vinci.be",
+    "password":"admin"
+}
+### Inits
+@adminToken = {{admin.response.body.token}}
+
+### login() as user
+# @name user
+POST {{defaultDomain}}/users/login
+Content-Type: application/json
+
+{
+    "email":"guillaume.feron@student.vinci.be",
+    "password":"user"
+}
+
+### Inits
+@userToken = {{user.response.body.token}}
+
+### getAll()
+GET {{defaultDomain}}/users
+Authorization: {{adminToken}}
+
+
+### getOne()
+GET {{defaultDomain}}/users/1
+
+### updateOne()
+PUT {{defaultDomain}}/users/1
+Content-Type: application/json
+
+{
+    "forename":"Test",
+    "lastname":"Test",
+    "email":"Test.Test@student.vinci.be",
+    "password":"Test"
+}
+
+### login()
+POST {{defaultDomain}}/users/login
+Content-Type: application/json
+
+{
+    "email":"a.feon@student.vini.be",
+    "password":"jesuisguigui"
+}
+
+
+### register()
+POST {{defaultDomain}}/users/register
+Content-Type: application/json
+
+{
+    "forename":"a",
+    "lastname":"Faeron",
+    "email":"a.feon@student.vini.be",
+    "password":"user"
+}
+
+### disconnect()
+GET {{defaultDomain}}/users/disconnect
