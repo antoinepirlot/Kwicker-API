@@ -50,8 +50,7 @@ router.post("/register", async function (req, res, next) {
     (req.body.lastname && !req.body.lastname.trim()) ||
     (req.body.email && !req.body.email.trim()) ||
     (req.body.username && !req.body.username.trim()) ||
-    (req.body.password && !req.body.password.trim()) ||
-      (req.body.biography && !req.body.biography.trim())
+    (req.body.password && !req.body.password.trim())
   )
     return res.status(400).end();
 
