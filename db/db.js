@@ -8,6 +8,7 @@ pool.on('error', (err, client) => {
     process.exit(1)
 });
 
+
 async function getUser(email) {
     const query = `
         SELECT *
@@ -47,3 +48,5 @@ module.exports = {
     getUser,
     getAllPosts
 }
+
+//module.exports = pool;

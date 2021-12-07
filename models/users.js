@@ -16,7 +16,8 @@ const defaultItems = [
     password: "$2b$10$RqcgWQT/Irt9MQC8UfHmjuGCrQkQNeNcU6UtZURdSB/fyt6bMWARa", // "admin",
     isActive: true,
     isAdmin: true,
-    creationDate: Date.now()
+    creationDate: Date.now(),
+    biography: "Oui"
   },
   {
     idUser: 2,
@@ -27,7 +28,8 @@ const defaultItems = [
     password: "$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC", // "user",
     isActive: true,
     isAdmin: false,
-    creationDate: Date.now()
+    creationDate: Date.now(),
+    biography: "Oui"
   }
   /*
   {
@@ -89,7 +91,8 @@ class Users {
       password: hashedPassword,
       isActive: true,
       isAdmin: false,
-      creationDate: Date.now()
+      creationDate: Date.now(),
+      biography: body.biography
     };
     items.push(newitem);
     serialize(this.jsonDbPath, items);
