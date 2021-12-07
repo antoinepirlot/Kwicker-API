@@ -1,16 +1,6 @@
 const {Pool} = require("pg");
 
-const dbUser = undefined;
-const dbPassword = undefined; //For the heroku's mdp we'll do it later. So, change to use your dbPassword
-// and please, don't push your dbPassword :p
-
-const dbCreditentials = {
-    host: "localhost",
-    port: 5432,
-    user: dbUser,
-    password: dbPassword
-}
-const pool = new Pool(dbCreditentials);
+const pool = new Pool();
 
 //pool.on from pg documentation
 pool.on('error', (err, client) => {
