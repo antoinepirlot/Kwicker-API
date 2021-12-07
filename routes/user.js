@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { Users}  = require('../models/users');
+const { Users }  = require('../models/users');
 const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
 const userModel = new Users();
 
