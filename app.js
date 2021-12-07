@@ -6,6 +6,7 @@ var cookieSession = require("cookie-session");
 
 var userRouter = require('./routes/user');
 var followRouter = require('./routes/follow');
+var postRouter = require("./routes/post");
 
 var app = express();
 
@@ -28,5 +29,6 @@ app.use(
 
 app.use('/users', userRouter);
 app.use('/follows', followRouter);
+app.use("/postS", postRouter);
 
 module.exports = app;
