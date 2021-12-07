@@ -29,8 +29,4 @@ app.use(
 app.use('/users', userRouter);
 app.use('/follows', followRouter);
 
-
-var x = require("./bin/www");
-console.log(x);
-
 module.exports = app;

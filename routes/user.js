@@ -7,7 +7,6 @@ const userModel = new Users();
 // Disconnect
 router.get("/disconnect", authorizeUser, function (req, res, next) {
   if (!req.session) return res.status(404).end();
-  console.log(req.session.idUser);
   req.session = null;
   return res.status(200).end();
 });
@@ -20,9 +19,7 @@ router.get('/', authorizeAdmin, function(req, res, next) {
 // getOne()
 router.get('/:idUser', authorizeUser, function(req, res, next) {
   const user = userModel.getOne(req.params.idUser);
-
   if (!user) return res.status(404).end();
-
   return res.json(userModel.getOne(req.params.idUser));
 });
 
@@ -33,7 +30,8 @@ router.put('/:idUser', authorizeUser, function(req, res, next) {
     (req.body.lastname && !req.body.lastname.trim()) ||
     (req.body.email && !req.body.email.trim()) ||
     (req.body.username && !req.body.username.trim()) ||
-    (req.body.password && !req.body.password.trim())
+    (req.body.username && !req.body.username.trim()) ||
+    (req.body.biography && !req.body.biography.trim())
   ) 
     return res.status(400).end();
 
@@ -52,7 +50,8 @@ router.post("/register", async function (req, res, next) {
     (req.body.lastname && !req.body.lastname.trim()) ||
     (req.body.email && !req.body.email.trim()) ||
     (req.body.username && !req.body.username.trim()) ||
-    (req.body.password && !req.body.password.trim())
+    (req.body.password && !req.body.password.trim()) ||
+      (req.body.biography && !req.body.biography.trim())
   )
     return res.status(400).end();
 
