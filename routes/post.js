@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     console.log("GET/ : Posts");
     try {
-        const {rows} = await db.query("SELECT * FROM kwicker.get_all_posts");
+        const {rows} = await db.query("SELECT * FROM kwicker.posts");
         res.send(rows);
     } catch (e){
         console.log(e.stack);
