@@ -35,7 +35,19 @@ router.get("/:email", async (req, res) => {
         res.send(rows);
     } catch (e){
         console.log(e.stack);
+        res.sendStatus(502);
     }
 });
 
+router.post("/", async (req, res) => {
+    const body = req.body;
+    let query = "INSERT INTO kwicker.posts (id_user, image, message, parent_post) VALUES ($1, $2, $3, $4)";
+    try{
+        await db.query(query, [body.id_user, body.image, body.message, body.parent_post]);
+        res.sendStatus(200);
+    } catch (e){
+        console.log(e.stack);
+        res.sendStatus(502);
+    }
+});
 module.exports = router;
