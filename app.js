@@ -29,6 +29,6 @@ app.use(
 
 app.use('/users', userRouter);
 app.use('/follows', followRouter);
-app.use("/postS", postRouter);
+app.use("/posts", postRouter);
 
 module.exports = app;
