@@ -1,0 +1,19 @@
+### GET all posts
+GET {{host}}/posts
+
+### GET all posts from a user
+GET {{host}}/posts/1
+
+### POST add a new post
+POST {{host}}/posts
+Content-Type: application/json
+
+{
+  "id_user": 1,
+  "image": null,
+  "message": "Rebonjour les emmerdeurs",
+  "parent_post": null
+}
+
+### DELETE a POST
+DELETE {{host}}/posts/11
