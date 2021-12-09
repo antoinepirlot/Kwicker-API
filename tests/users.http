@@ -29,12 +29,12 @@ GET {{host}}/users
 Authorization: {{adminToken}}
 
 
-### getOne()
+### getUserById()
 GET {{host}}/users/2
 Authorization: {{userToken}}
 
 
-### updateOne()
+### updateUser()
 PUT {{host}}/users/1
 Content-Type: application/json
 Authorization: {{userToken}}
@@ -61,9 +61,9 @@ POST {{host}}/users/register
 Content-Type: application/json
 
 {
-    "forename":"Alex",
-    "lastname":"Ottoy",
-    "email":"alex.ottoy@vinci.be",
+    "forename":"Victor",
+    "lastname":"Rijks",
+    "email":"victor.rijks@vinci.be",
     "password":"mdp"
 }
 
@@ -78,3 +78,7 @@ Content-Type: application/json
 
 ### disconnect()
 GET {{host}}/users/disconnect
+
+
+### delete()
+DELETE {{host}}/users/5

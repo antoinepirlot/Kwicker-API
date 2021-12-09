@@ -30,7 +30,7 @@ class Follows {
         const items = parse(this.jsonDbPath, this.defaultItems);
 
         if (idFollower == idFollowed) return;
-        if (items.findIndex((f) => f.idUserFollowed == idFollowed && f.idUserFollower == idFollower) != -1) return;
+        //if (items.findIndex((f) => f.idUserFollowed == idFollowed && f.idUserFollower == idFollower) != -1) return;
 
         const newFollow = {
             idFollow: this.getNextId(),

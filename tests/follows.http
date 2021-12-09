@@ -6,6 +6,6 @@ Authorization: {{userToken}}
 GET {{host}}/follows/followeds/1
 Authorization: {{userToken}}
 
-### addOne()
+### addUser()
 POST {{host}}/follows/3
 Authorization: {{userToken}}
