@@ -4,14 +4,14 @@ const jwtSecret = "motdepasse";
 const { Users } = require("../models/users");
 const userModel = new Users();
 
-const authorizeAdmin = (req, res, next) => {
+const authorizeAdmin = async (req, res, next) => {
   let token = req.session.token;
   if (!token) return res.status(401).end();
   try {
     const decoded = jwt.verify(token, jwtSecret);
-    const userFound = userModel.getOne(decoded.idUser);
+    const userFound = await userModel.getUserById(decoded.idUser);
     if (!userFound) return res.status(403).end();
-    if (!userFound.isAdmin) return res.status(403).end();
+    if (!userFound.is_admin) return res.status(403).end();
     req.user = userFound;
     next();
   } catch (err) {
@@ -20,12 +20,12 @@ const authorizeAdmin = (req, res, next) => {
   }
 };
 
-const authorizeUser = (req, res, next) => {
+const authorizeUser = async (req, res, next) => {
   let token = req.session.token;
   if (!token) return res.status(401).end();
   try {
     const decoded = jwt.verify(token, jwtSecret);
-    const userFound = userModel.getOne(decoded.idUser);
+    const userFound = await userModel.getUserById(decoded.idUser);
     if (!userFound) return res.status(403).end();
     req.user = userFound;
     next();
