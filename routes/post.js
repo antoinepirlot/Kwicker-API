@@ -30,10 +30,10 @@ router.get("/:id_user", async (req, res) => {
 router.post("/", async (req, res) => {
     console.log("POST/");
     if(!req.body)
-        return res.sendStatus(404);
-    return res.sendStatus(200);
+        return res.sendStatus(400);
     try{
         await postsModel.createPost(req.body);
+        return res.sendStatus(200);
     } catch (e){
         return res.sendStatus(502);
     }
