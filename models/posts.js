@@ -1,0 +1,52 @@
+const db = require("../db/db");
+
+class Posts {
+    /**
+     * Request to the db to SELECT all posts
+     * @returns {Array} rows -> list of all posts
+     */
+    async getAllPosts() {
+        const query = `SELECT id_post, id_user, image, message, parent_post, is_removed
+                       FROM kwicker.posts`;
+        try {
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+        }
+    }
+
+    /**
+     * Return the user from the db
+     * @param body
+     * @returns {Promise<{image, parent_post, id_user, message}>}
+     */
+    async getUserPosts(id_user) {
+        const query = `SELECT id_post,
+                              id_user,
+                              image,
+                              message,
+                              parent_post,
+                              is_removed
+                       FROM kwicker.posts
+                       WHERE id_user = $1`;
+        try {
+            const {rows} = await db.query(query, [id_user]);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+        }
+    }
+
+    async createPost(body){
+        const query = `INSERT INTO kwicker.posts (id_user, image, message, parent_post) VALUES ($1, $2, $3, $4)`;
+        try{
+            await db.query(query, [body.id_user, body.image, body.message, body.parent_post]);
+        } catch (e){
+            console.log(e.stack);
+        }
+    }
+
+}
+
+module.exports = {Posts};
