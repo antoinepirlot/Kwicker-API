@@ -47,6 +47,22 @@ class Posts {
         }
     }
 
+    /**
+     * Update the post identified by its id and add it body's attributes, image and message are required
+     * @param id_post
+     * @param body
+     * @returns {Promise<null|number|*>}
+     */
+    async updatePost(id_post, body){
+        const query = "UPDATE kwicker.posts SET image = $1, message = $2";
+        try{
+            const result = db.query(query, [body.image, body.message]);
+            return result.rowCount;
+        } catch (e){
+            console.log(e.stack);
+        }
+    }
+
     async removePost(id_post){
         const query = `UPDATE kwicker.posts
                    SET is_removed = TRUE
