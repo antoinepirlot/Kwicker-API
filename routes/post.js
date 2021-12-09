@@ -47,6 +47,9 @@ router.post("/", async (req, res) => {
     }
 });
 
+/**
+ * DELETE a post identified by its id
+ */
 router.delete("/:id_post", async (req, res) => {
     console.log("DELETE");
     try{
