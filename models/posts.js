@@ -38,6 +38,11 @@ class Posts {
         }
     }
 
+    /**
+     * Add a new post to the db
+     * @param body
+     * @returns {Promise<void>}
+     */
     async createPost(body){
         const query = `INSERT INTO kwicker.posts (id_user, image, message, parent_post) VALUES ($1, $2, $3, $4)`;
         try{
@@ -63,6 +68,11 @@ class Posts {
         }
     }
 
+    /**
+     * Remove a post from the db
+     * @param id_post
+     * @returns {Promise<null|number|*>}
+     */
     async removePost(id_post){
         const query = `UPDATE kwicker.posts
                    SET is_removed = TRUE
