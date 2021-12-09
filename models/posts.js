@@ -47,6 +47,17 @@ class Posts {
         }
     }
 
+    async removePost(id_post){
+        const query = `UPDATE kwicker.posts
+                   SET is_removed = TRUE
+                   WHERE id_post = $1`;
+        try{
+            const result = await db.query(query, [id_post]);
+            return result.rowCount;
+        } catch (e){
+            console.log(e.stack);
+        }
+    }
 }
 
 module.exports = {Posts};

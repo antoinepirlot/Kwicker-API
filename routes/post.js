@@ -28,26 +28,25 @@ router.get("/:id_user", async (req, res) => {
  * POST add a new post to the db
  */
 router.post("/", async (req, res) => {
-    const body = req.body;
-    let query = "INSERT INTO kwicker.posts (id_user, image, message, parent_post) VALUES ($1, $2, $3, $4)";
+    console.log("POST/");
+    if(!req.body)
+        return res.sendStatus(404);
+    return res.sendStatus(200);
     try{
-        await db.query(query, [body.id_user, body.image, body.message, body.parent_post]);
+        await postsModel.createPost(req.body);
     } catch (e){
-        console.log(e.stack);
         return res.sendStatus(502);
     }
 });
 
 router.delete("/:id_post", async (req, res) => {
-    console.log("hello");
-    const query = `UPDATE kwicker.posts
-                   SET is_removed = TRUE
-                   WHERE id_post = $1`;
+    console.log("DELETE");
     try{
-        await db.query(query, [req.params.id_post]);
-        res.sendStatus(200);
+        const rowCount = await postsModel.removePost(req.params.id_post);
+        if(rowCount === 0)
+            return res.sendStatus(404);
+        return res.sendStatus(200);
     } catch (e){
-        console.log(e.stack);
         res.sendStatus(502);
     }
 });
