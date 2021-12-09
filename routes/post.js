@@ -48,6 +48,23 @@ router.post("/", async (req, res) => {
 });
 
 /**
+ * PUT update a post identified by its id
+ */
+router.put("/:id_post", async (req, res) => {
+    console.log("PUT/ Update a post");
+    if(!req.body || !req.body.image || !req.body.message)
+        return res.sendStatus(400);
+    try{
+        const rowCount = await postsModel.updatePost(req.params.id_post, req.body);
+        if(rowCount === 0)
+            return res.sendStatus(404);
+        return res.sendStatus(200);
+    } catch (e){
+        return res.sendStatus(502);
+    }
+});
+
+/**
  * DELETE a post identified by its id
  */
 router.delete("/:id_post", async (req, res) => {
