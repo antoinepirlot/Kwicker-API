@@ -1,17 +1,21 @@
 DROP SCHEMA IF EXISTS kwicker CASCADE;
 
 CREATE SCHEMA kwicker;
+SET TIMEZONE='Europe/Brussels';
 
 CREATE TABLE kwicker.users
 (
     id_user   SERIAL PRIMARY KEY,
     forename  VARCHAR(50)  NOT NULL CHECK (forename <> ''),
     lastname  VARCHAR(50)  NOT NULL CHECK (lastname <> ''),
-    email     VARCHAR(100) NOT NULL CHECK (email <> ''),
+    email     VARCHAR(100) NOT NULL CHECK (email <> '') UNIQUE,
+    username  VARCHAR(100) NOT NULL CHECK (username <> '') UNIQUE,
     image     VARCHAR(100) CHECK (image <> ''),
     password  VARCHAR(100) NOT NULL CHECK (password <> ''),
     is_active BOOLEAN      NOT NULL DEFAULT TRUE,
-    is_admin  BOOLEAN      NOT NULL DEFAULT FALSE
+    is_admin  BOOLEAN      NOT NULL DEFAULT FALSE,
+    biography VARCHAR(500) NULL,
+    date_creation DATE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE kwicker.posts
@@ -20,8 +24,9 @@ CREATE TABLE kwicker.posts
     id_user     INTEGER      NOT NULL,
     image       VARCHAR(100) CHECK (image <> ''),
     message     VARCHAR(300) NOT NULL CHECK (message <> ''),
-    parent_post INTEGER,
+    parent_post INTEGER      NOT NULL,
     is_removed  BOOLEAN NOT NULL DEFAULT FALSE,
+    date_creation DATE NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_user) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (parent_post) REFERENCES kwicker.posts (id_post)
 );

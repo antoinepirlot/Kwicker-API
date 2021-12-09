@@ -12,15 +12,15 @@ router.get("/disconnect", authorizeUser, function (req, res, next) {
 });
 
 // getAll()
-router.get('/', authorizeAdmin, function(req, res, next) {
-  return res.json(userModel.getAll());
+router.get('/', async function(req, res, next) {
+  return res.json(await userModel.getAll());
 });
 
 // getOne()
-router.get('/:idUser', authorizeUser, function(req, res, next) {
-  const user = userModel.getOne(req.params.idUser);
+router.get('/:idUser', async function(req, res, next) {
+  const user = await userModel.getOne(req.params.idUser);
   if (!user) return res.status(404).end();
-  return res.json(userModel.getOne(req.params.idUser));
+  return res.json(user);
 });
 
 // updateOne()
@@ -46,11 +46,11 @@ router.put('/:idUser', authorizeUser, function(req, res, next) {
 router.post("/register", async function (req, res, next) {
   if (
     !req.body ||
-    (req.body.forename && !req.body.forename.trim()) ||
-    (req.body.lastname && !req.body.lastname.trim()) ||
-    (req.body.email && !req.body.email.trim()) ||
-    (req.body.username && !req.body.username.trim()) ||
-    (req.body.password && !req.body.password.trim())
+    !req.body.forename || !req.body.forename.trim() ||
+    !req.body.lastname || !req.body.lastname.trim() ||
+    !req.body.email || !req.body.email.trim() ||
+    // !req.body.username || !req.body.username.trim() ||
+    !req.body.password || !req.body.password.trim()
   )
     return res.status(400).end();
 
@@ -73,8 +73,8 @@ router.post("/register", async function (req, res, next) {
 router.post("/login", async function (req, res, next) {
   if (
     !req.body ||
-    (req.body.email && !req.body.email.trim()) ||
-    (req.body.password && !req.body.password.trim())
+    !req.body.email || !req.body.email.trim() ||
+    !req.body.password || !req.body.password.trim()
   )
     return res.status(400).end();
 

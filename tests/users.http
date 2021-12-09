@@ -61,10 +61,9 @@ POST {{host}}/users/register
 Content-Type: application/json
 
 {
-    "forename":"Frederic",
-    "lastname":"Bardijn",
-    "email":"frederic.barijn@student.vini.be",
-    "username": "fbb", 
+    "forename":"Alex",
+    "lastname":"Ottoy",
+    "email":"alex.ottoy@vinci.be",
     "password":"mdp"
 }
 
@@ -73,7 +72,7 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-    "email":"frederic.barijn@student.vini.be",
+    "email":"alex.ottoy@vinci.be",
     "password":"mdp"
 }
 

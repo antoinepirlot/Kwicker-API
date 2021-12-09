@@ -2,6 +2,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const { parse, serialize } = require("../utils/json");
+const db = require("../db/db");
 const jwtSecret = "motdepasse";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000;
 const saltRounds = 10;
@@ -58,45 +59,72 @@ class Users {
     return nextId;
   }
 
-  getAll() {
-    return parse(this.jsonDbPath, this.defaultItems);
+  async getAll() {
+    const query = `SELECT * FROM kwicker.users`;
+    try {
+      const { rows } = await db.query(query);
+      return rows;
+    } catch (e) {
+      console.log(e.stack);
+    }
+    return false;
   }
 
-  getOneByEmail(email) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    const foundIndex = items.findIndex((item) => item.email == email);
-    if (foundIndex < 0) return;
-    return items[foundIndex];
+  async getOneByEmail(email) {
+    const query = `SELECT * FROM kwicker.users u WHERE u.email = $1`;
+    try {
+      const { rows } = await db.query(query, [email]);
+      return rows;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
   }
 
-  getOne(id) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    const foundIndex = items.findIndex((item) => item.idUser == id);
-    if (foundIndex < 0) return;
-    return items[foundIndex];
+  async getOne(id) {
+    const query = `SELECT * FROM kwicker.users u WHERE u.id_user = $1`;
+    try {
+      const { rows } = await db.query(query, [id]);
+      return rows;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
   }
 
   async addOne(body) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
+    // const items = parse(this.jsonDbPath, this.defaultItems);
     const hashedPassword = await bcrypt.hash(body.password, saltRounds);
 
-    if (items.findIndex(u => u.email == body.email || u.username == body.username) != -1) return;
+    // if (items.findIndex(u => u.email == body.email || u.username == body.username) != -1) {
+    //   return;
+    // }
 
-    const newitem = {
-      idUser: this.getNextId(),
-      forename: body.forename,
-      lastname: body.lastname,
-      email: body.email,
-      username: body.username,
-      password: hashedPassword,
-      isActive: true,
-      isAdmin: false,
-      creationDate: Date.now(),
-      biography: body.biography
-    };
-    items.push(newitem);
-    serialize(this.jsonDbPath, items);
-    return newitem;
+    // const newitem = {
+    //   idUser: this.getNextId(),
+    //   forename: body.forename,
+    //   lastname: body.lastname,
+    //   email: body.email,
+    //   username: body.username,
+    //   password: hashedPassword,
+    //   isActive: true,
+    //   isAdmin: false,
+    //   creationDate: Date.now(),
+    //   biography: body.biography
+    // };
+    // items.push(newitem);
+    // serialize(this.jsonDbPath, items);
+
+    const query = `INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, NULL, $4, DEFAULT, DEFAULT)`;
+    try {
+      const { rows } = await db.query(query, [body.forename, body.lastname, body.email, hashedPassword]);
+      return rows;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
+
+    // return newitem;
   }
 
   deleteOne(id) {
@@ -119,14 +147,14 @@ class Users {
   }
 
   async login(email, password) {
-    const userFound = this.getOneByEmail(email);
+    const userFound = await this.getOneByEmail(email);
     if (!userFound) return;
 
-    const match = await bcrypt.compare(password, userFound.password);
+    const match = await bcrypt.compare(password, userFound[0].password);
     if (!match) return;
 
     const authenticatedUser = {
-      idUser: userFound.idUser,
+      idUser: userFound[0].idUser,
       token: "None",
     };
 
@@ -141,11 +169,7 @@ class Users {
   }
 
   async register(forename, lastname, email, username, password) {
-    const userFound = this.getOneByEmail(email);
-    if (userFound) return;
-
     const newUser = await this.addOne({ forename: forename, lastname: lastname, email: email, username: username, password: password });
-
     if (!newUser) return;
 
     const authenticatedUser = {
