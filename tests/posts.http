@@ -16,4 +16,4 @@ Content-Type: application/json
 }
 
 ### DELETE a POST
-DELETE {{host}}/posts/11
+DELETE {{host}}/posts/4
