@@ -50,4 +50,19 @@ router.post("/", async (req, res) => {
         res.sendStatus(502);
     }
 });
+
+router.delete("/:id_post", async (req, res) => {
+    console.log("hello");
+    const query = `UPDATE kwicker.posts
+                   SET is_removed = TRUE
+                   WHERE id_post = $1`;
+    try{
+        await db.query(query, [req.params.id_post]);
+        res.sendStatus(200);
+    } catch (e){
+        console.log(e.stack);
+        res.sendStatus(502);
+    }
+});
+
 module.exports = router;
