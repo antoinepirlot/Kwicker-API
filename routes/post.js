@@ -52,7 +52,7 @@ router.post("/", async (req, res) => {
  */
 router.put("/:id_post", async (req, res) => {
     console.log("PUT/ Update a post");
-    if(!req.body || !req.body.image || !req.body.message)
+    if(!req.body || !req.body.message)
         return res.sendStatus(400);
     try{
         const rowCount = await postsModel.updatePost(req.params.id_post, req.body);

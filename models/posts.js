@@ -59,9 +59,9 @@ class Posts {
      * @returns {Promise<null|number|*>}
      */
     async updatePost(id_post, body){
-        const query = "UPDATE kwicker.posts SET image = $1, message = $2";
+        const query = "UPDATE kwicker.posts SET image = $1, message = $2 WHERE id_post = $3";
         try{
-            const result = db.query(query, [body.image, body.message]);
+            const result = db.query(query, [body.image, body.message, id_post]);
             return result.rowCount;
         } catch (e){
             console.log(e.stack);
