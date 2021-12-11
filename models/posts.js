@@ -14,6 +14,7 @@ class Posts {
             return rows;
         } catch (e) {
             console.log(e.stack);
+            throw new Error("Error while getting all posts from the database.");
         }
     }
 
@@ -36,6 +37,7 @@ class Posts {
             return rows;
         } catch (e) {
             console.log(e.stack);
+            throw new Error("Error while getting user's posts from the database.");
         }
     }
 
@@ -54,6 +56,7 @@ class Posts {
                     escape(body.parent_post)]);
         } catch (e){
             console.log(e.stack);
+            throw new Error("Error while creating post to database.");
         }
     }
 
@@ -73,6 +76,7 @@ class Posts {
             return result.rowCount;
         } catch (e){
             console.log(e.stack);
+            throw new Error("Error while updating post in the database.");
         }
     }
 
@@ -90,6 +94,7 @@ class Posts {
             return result.rowCount;
         } catch (e){
             console.log(e.stack);
+            throw new Error("Error while removing a post from the database.");
         }
     }
 }
