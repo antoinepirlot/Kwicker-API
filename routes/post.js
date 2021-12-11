@@ -24,7 +24,7 @@ router.get("/:id_user", async (req, res) => {
     console.log("GET/ : Posts from a user");
     try {
         const posts = await postsModel.getUserPosts(req.params.id_user);
-        if(!posts)
+        if(posts.length === 0)
             return res.sendStatus(404);
         return res.json(posts);
     } catch (e){
