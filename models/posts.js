@@ -1,4 +1,5 @@
 const db = require("../db/db");
+const escape = require("escape-html");
 
 class Posts {
     /**
@@ -46,7 +47,11 @@ class Posts {
     async createPost(body){
         const query = `INSERT INTO kwicker.posts (id_user, image, message, parent_post) VALUES ($1, $2, $3, $4)`;
         try{
-            await db.query(query, [body.id_user, body.image, body.message, body.parent_post]);
+            await db.query(query,
+                [escape(body.id_user),
+                    escape(body.image),
+                    escape(body.message),
+                    escape(body.parent_post)]);
         } catch (e){
             console.log(e.stack);
         }
@@ -61,7 +66,10 @@ class Posts {
     async updatePost(id_post, body){
         const query = "UPDATE kwicker.posts SET image = $1, message = $2 WHERE id_post = $3";
         try{
-            const result = db.query(query, [body.image, body.message, id_post]);
+            const result = db.query(query,
+                [escape(body.image),
+                    escape(body.message),
+                    escape(id_post)]);
             return result.rowCount;
         } catch (e){
             console.log(e.stack);
@@ -78,7 +86,7 @@ class Posts {
                    SET is_removed = TRUE
                    WHERE id_post = $1`;
         try{
-            const result = await db.query(query, [id_post]);
+            const result = await db.query(query, [escape(id_post)]);
             return result.rowCount;
         } catch (e){
             console.log(e.stack);
