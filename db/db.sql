@@ -48,23 +48,33 @@ CREATE TABLE kwicker.likes
 
 CREATE TABLE kwicker.reports
 (
-    id_post INTEGER      NOT NULL,
-    id_user INTEGER      NOT NULL,
-    message VARCHAR(300) NOT NULL CHECK ( message <> ' ' ),
+    id_post INTEGER,
+    id_user INTEGER,
+    message VARCHAR(300) NOT NULL CHECK ( message <> '' ),
     PRIMARY KEY (id_post, id_user),
     FOREIGN KEY (id_user) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (id_post) REFERENCES kwicker.posts (id_post)
 
 );
 
+CREATE TABLE kwicker.messages
+(
+    id_message   SERIAL PRIMARY KEY,
+    id_sender    INTEGER CHECK ( id_sender <> messages.id_recipient ),
+    id_recipient INTEGER CHECK ( id_recipient <> messages.id_sender ),
+    message      VARCHAR(300) NOT NULL CHECK ( message <> '' ),
+    FOREIGN KEY (id_sender) REFERENCES kwicker.users (id_user),
+    FOREIGN KEY (id_recipient) REFERENCES kwicker.users (id_user)
+);
+
 CREATE OR REPLACE FUNCTION kwicker.add_like() RETURNS TRIGGER AS
 $$
-    BEGIN
-        UPDATE kwicker.posts
-        SET number_of_likes = number_of_likes + 1
-        WHERE id_post = NEW.id_post;
-        RETURN NEW;
-    END;
+BEGIN
+    UPDATE kwicker.posts
+    SET number_of_likes = number_of_likes + 1
+    WHERE id_post = NEW.id_post;
+    RETURN NEW;
+END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_add_like
@@ -107,3 +117,11 @@ INSERT INTO kwicker.likes (id_user, id_post)
 VALUES (3, 5);
 INSERT INTO kwicker.likes (id_user, id_post)
 VALUES (4, 8);
+
+INSERT INTO kwicker.messages (id_sender, id_recipient, message)
+VALUES (1, 3, 'Hello');
+INSERT INTO kwicker.messages (id_sender, id_recipient, message)
+VALUES (3, 1, 'Hello Comment ça va?');
+
+INSERT INTO kwicker.messages (id_sender, id_recipient, message)
+VALUES (1, 4, 'Soulaymane m''a répondu');
