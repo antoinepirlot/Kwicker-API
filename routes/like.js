@@ -28,4 +28,19 @@ router.get("/:id_user", async (req, res) => {
     }
 });
 
+/**
+ * POST add a new Like to the db associated to the user
+ */
+router.post("/", async(req, res) => {
+    console.log("POST/");
+    if(!req.body)
+        return res.sendStatus(400);
+    try{
+        await likesModel.addLike(req.body);
+        return res.sendStatus(201);
+    } catch (e){
+        return res.sendStatus(502);
+    }
+});
+
 module.exports = router;
