@@ -43,4 +43,18 @@ router.post("/", async(req, res) => {
     }
 });
 
+router.delete("/", async (req, res) => {
+    console.log("PUT/");
+    if(!req.body)
+        return res.sendStatus(400);
+    try{
+        const rowCount = await likesModel.removeLike(req.body);
+        if(rowCount === 0)
+            return res.sendStatus(404);
+        return res.sendStatus(200);
+    } catch (e){
+        return res.sendStatus(502);
+    }
+});
+
 module.exports = router;
