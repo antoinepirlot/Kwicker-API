@@ -27,6 +27,7 @@ CREATE TABLE kwicker.posts
     parent_post INTEGER,
     is_removed  BOOLEAN NOT NULL DEFAULT FALSE,
     date_creation DATE NOT NULL DEFAULT NOW(),
+    number_of_likes INT NOT NULL DEFAULT 0 CHECK (number_of_likes >= 0),
     FOREIGN KEY (id_user) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (parent_post) REFERENCES kwicker.posts (id_post)
 );
@@ -55,7 +56,7 @@ CREATE TABLE kwicker.reports
     FOREIGN KEY (id_post) REFERENCES kwicker.posts (id_post)
 
 );
-
+TRIGGER LIKES
 INSERT INTO kwicker.users (forename, lastname, email, username, password) VALUES ('Antoine', 'Pirlot', 'antoine.pirlot@vinci.be', 'lepirelot' ,'mdp');
 INSERT INTO kwicker.users (forename, lastname, email, username, password) VALUES ('Denis', 'Victor', 'victor.denis@vinci.be', 'vivi','mdp');
 INSERT INTO kwicker.users (forename, lastname, email, username, password) VALUES ('Soulaymane', 'Gharroudi', 'soulaymane.gharroudi@vinci.be', 'souli','mdp');

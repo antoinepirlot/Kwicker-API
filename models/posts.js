@@ -7,8 +7,9 @@ class Posts {
      * @returns {Array} rows -> list of all posts
      */
     async getAllPosts() {
-        const query = `SELECT id_post, id_user, image, message, parent_post, is_removed
-                       FROM kwicker.posts`;
+        const query = `SELECT id_post, id_user, image, message, parent_post, is_removed, number_of_likes
+                       FROM kwicker.posts
+                       ORDER BY date_creation`;
         try {
             const {rows} = await db.query(query);
             return rows;
@@ -29,9 +30,11 @@ class Posts {
                               image,
                               message,
                               parent_post,
-                              is_removed
+                              is_removed,
+                              number_of_likes
                        FROM kwicker.posts
-                       WHERE id_user = $1`;
+                       WHERE id_user = $1
+                       ORDER BY date_creation`;
         try {
             const {rows} = await db.query(query, [id_user]);
             return rows;
