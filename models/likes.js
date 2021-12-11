@@ -49,12 +49,29 @@ class Likes{
         const query = {
             text: "INSERT INTO kwicker.likes VALUES ($1, $2)",
             values: [escape(body.id_user), escape(body.id_post)]
-        }
+        };
         try{
             await db.query(query)
         } catch (e){
             console.log(e.stack);
             throw new Error("Error while add a new like in the db.");
+        }
+    }
+
+    async removeLike(body){
+        const query = {
+            text: `DELETE
+                   FROM kwicker.likes
+                   WHERE id_user = $1
+                     AND id_post = $2`,
+            values: [escape(body.id_user), escape(body.id_post)]
+        };
+        try{
+            const result = db.query(query);
+            return result.rowCount;
+        } catch (e){
+            console.log(e.stack);
+            throw new Error("Error while deleting like from the db.");
         }
     }
 }
