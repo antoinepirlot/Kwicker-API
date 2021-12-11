@@ -39,6 +39,24 @@ class Likes{
             throw new Error("Error while getting user's likes.");
         }
     }
+
+    /**
+     * Add a new like to the db
+     * @param body
+     * @returns {Promise<void>}
+     */
+    async addLike(body){
+        const query = {
+            text: "INSERT INTO kwicker.likes VALUES ($1, $2)",
+            values: [escape(body.id_user), escape(body.id_post)]
+        }
+        try{
+            await db.query(query)
+        } catch (e){
+            console.log(e.stack);
+            throw new Error("Error while add a new like in the db.");
+        }
+    }
 }
 
 module.exports = {Likes};
