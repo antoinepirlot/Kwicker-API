@@ -20,7 +20,8 @@ PUT {{host}}/posts/1
 Content-Type: application/json
 
 {
-  "message": "J'ai modifié le message :p"
+  "image": null,
+  "message": "J'ai modifiÃ© le message encore une fois :p"
 }
 
 ### DELETE a POST
