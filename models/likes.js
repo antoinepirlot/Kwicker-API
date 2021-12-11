@@ -12,13 +12,31 @@ class Likes{
             text: `SELECT id_user,
                           id_post
                    FROM kwicker.likes`
-        }
+        };
         try{
             const {rows} = await db.query(query);
             return rows;
         } catch (e){
             console.log(e.stack);
             throw new Error("Error while getting all likes from the database.");
+        }
+    }
+
+    async getUserLikes(id_user){
+        const query = {
+            name: "fetch-user-likes",
+            text: `SELECT id_user,
+                          id_post
+                   FROM kwicker.likes
+                   WHERE id_user = $1`,
+            values: [escape(id_user)]
+        };
+        try{
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e){
+            console.log(e.stack);
+            throw new Error("Error while getting user's likes.");
         }
     }
 }
