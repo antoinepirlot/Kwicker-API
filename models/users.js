@@ -22,7 +22,7 @@ class Users {
   }
 
   async getUserByEmail(email) {
-    const query = `SELECT id_user, forename, lastname, email, image, password, is_active, is_admin FROM kwicker.users u WHERE u.email = $1`;
+    const query = `SELECT * FROM kwicker.users u WHERE u.email = $1`;
     try {
       const { rows } = await db.query(query, [email]);
       return rows[0];
@@ -47,8 +47,9 @@ class Users {
     const hashedPassword = await bcrypt.hash(body.password, saltRounds);
     const query = `INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, NULL, $4, DEFAULT, DEFAULT)`;
     try {
-      const { rows } = await db.query(query, [body.forename, body.lastname, body.email, hashedPassword]);
-      return rows;
+      await db.query(query, [body.forename, body.lastname, body.email, hashedPassword])
+      console.log(rows)
+      return true;
     } catch (e) {
       console.log(e.stack);
       return false;
@@ -67,14 +68,6 @@ class Users {
   }
 
   async updateUser(id, body) {
-    // const items = parse(this.jsonDbPath, this.defaultItems);
-    // const foundIndex = items.findIndex((item) => item.idUser == id);
-    // if (foundIndex < 0) return;
-    // const updateditem = { ...items[foundIndex], ...body };
-    // items[foundIndex] = updateditem;
-    // serialize(this.jsonDbPath, items);
-    // return updateditem;
-
     const query = `UPDATE kwicker.users SET is_active = FALSE WHERE id_user = $1`;
     try {
       const { rows } = await db.query(query, [id]);
@@ -85,11 +78,11 @@ class Users {
     }
   }
 
-  async login(email, password) {
-    const userFound = await this.getUserByEmail(email);
+  async login(body) {
+    const userFound = await this.getUserByEmail(body.email);
     if (!userFound) return;
 
-    const match = await bcrypt.compare(password, userFound.password);
+    const match = await bcrypt.compare(body.password, userFound.password);
     if (!match) return;
 
     const authenticatedUser = {
@@ -108,7 +101,7 @@ class Users {
   }
 
   async register(body) {
-    const newUser = await this.addUser(
+    let newUser = await this.addUser(
         {
           forename: body.forename,
           lastname: body.lastname,
@@ -118,9 +111,8 @@ class Users {
         }
     );
     if (!newUser) return;
-
     const authenticatedUser = {
-      idUser: newUser.idUser,
+      idUser: newUser.id_user,
       token: "None",
     };
 

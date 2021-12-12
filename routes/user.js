@@ -5,33 +5,33 @@ const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
 const userModel = new Users();
 
 // getAllActiveUsers()
-router.get('/', authorizeUser, async function(req, res, next) {
+router.get('/', async function(req, res, next) {
   return res.json(await userModel.getAllActiveUsers());
 });
 
 // disconnect()
-router.get("/disconnect", authorizeUser, function (req, res, next) {
+router.get("/disconnect", function (req, res, next) {
   if (!req.session) return res.status(404).end();
   req.session = null;
   return res.status(200).end();
 });
 
 // getUserById()
-router.get('/:idUser', authorizeUser, async function(req, res, next) {
+router.get('/:idUser', async function(req, res, next) {
   const user = await userModel.getUserById(req.params.idUser);
   if (!user) return res.status(404).end();
   return res.json(user);
 });
 
 // getUserByEmail()
-router.get('/email/:email', authorizeUser, async function(req, res, next) {
+router.get('/email/:email', async function(req, res, next) {
   const user = await userModel.getUserByEmail(req.params.email);
   if (!user) return res.status(404).end();
   return res.json(user);
 });
 
 // updateUser()
-router.put('/:idUser', authorizeUser, async function(req, res, next) {
+router.put('/:idUser', async function(req, res, next) {
   if (!req.body ||
     (req.body.forename && !req.body.forename.trim()) ||
     (req.body.lastname && !req.body.lastname.trim()) ||
@@ -50,7 +50,7 @@ router.put('/:idUser', authorizeUser, async function(req, res, next) {
 });
 
 // Delete
-router.delete("/:idUser", authorizeUser, async function(req, res, next) {
+router.delete("/:idUser", async function(req, res, next) {
   return res.json(userModel.deleteUser(req.params.idUser));
 });
 
@@ -84,10 +84,7 @@ router.post("/login", async function (req, res, next) {
   )
     return res.status(400).end();
 
-  const authenticatedUser = await userModel.login(
-    req.body.email,
-    req.body.password
-  );
+  const authenticatedUser = await userModel.login(req.body);
   if (!authenticatedUser) return res.status(401).end();
   
   req.session.idUser = authenticatedUser.idUser;

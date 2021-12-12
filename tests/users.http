@@ -6,7 +6,7 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-    "email":"francois.bardijn@student.vinci.be",
+    "email":"francois.bardijn@vinci.be",
     "password":"admin"
 }
 
@@ -24,13 +24,28 @@ Content-Type: application/json
 
 > {% client.global.set("userToken", response.body.token);%}
 
+
+### register() as user
+# @name user
+POST {{host}}/users/register
+Content-Type: application/json
+
+{
+  "forename":"test",
+  "lastname":"test",
+  "email":"test.eron@student.vinci.be",
+  "password":"user"
+}
+
+> {% client.global.set("userToken", response.body.token);%}
+
 ### getAll()
 GET {{host}}/users
 Authorization: {{adminToken}}
 
 
 ### getUserById()
-GET {{host}}/users/2
+GET {{host}}/users/8
 Authorization: {{userToken}}
 
 
@@ -44,36 +59,6 @@ Authorization: {{userToken}}
     "lastname":"Test",
     "email":"Test.Test@student.vinci.be",
     "password":"Test"
-}
-
-### login()
-POST {{host}}/users/login
-Content-Type: application/json
-
-{
-    "email":"a.feon@student.vini.be",
-    "password":"jesuisguigui"
-}
-
-
-### register()
-POST {{host}}/users/register
-Content-Type: application/json
-
-{
-    "forename":"Victor",
-    "lastname":"Rijks",
-    "email":"victor.rijks@vinci.be",
-    "password":"mdp"
-}
-
-### login()
-POST {{host}}/users/login
-Content-Type: application/json
-
-{
-    "email":"alex.ottoy@vinci.be",
-    "password":"mdp"
 }
 
 ### disconnect()
