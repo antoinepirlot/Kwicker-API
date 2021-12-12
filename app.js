@@ -7,6 +7,7 @@ var cookieSession = require("cookie-session");
 var userRouter = require('./routes/user');
 var followRouter = require('./routes/follow');
 var postRouter = require("./routes/post");
+var likeRouter = require("./routes/like");
 
 var app = express();
 
@@ -30,5 +31,6 @@ app.use(
 app.use('/users', userRouter);
 app.use('/follows', followRouter);
 app.use("/posts", postRouter);
+app.use("/likes", likeRouter);
 
 module.exports = app;

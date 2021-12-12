@@ -15,5 +15,14 @@ Content-Type: application/json
   "parent_post": null
 }
 
+### PUT update a post
+PUT {{host}}/posts/1
+Content-Type: application/json
+
+{
+  "image": null,
+  "message": "J'ai modifié le message encore une fois :p"
+}
+
 ### DELETE a POST
 DELETE {{host}}/posts/4
