@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
 /**
  * GET all user's likes
  */
-router.get("/:id_user", async (req, res) => {
+router.get("/user/:id_user", async (req, res) => {
     try{
         const likes = await likesModel.getUserLikes(req.params.id_user);
         if(likes.length === 0)
@@ -25,6 +25,15 @@ router.get("/:id_user", async (req, res) => {
         return res.json(likes);
     } catch (e){
         return res.sendStatus(502);
+    }
+});
+
+router.get("/post/:id_post", async (req, res) => {
+    try{
+        const likes = await likesModel.getPostLikes(req.params.id_post);
+        return res.json(likes);
+    } catch (e){
+        return res.sendStatus(502).end();
     }
 });
 
