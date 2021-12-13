@@ -2,7 +2,10 @@
 GET {{host}}/likes
 
 ### GET user's likes
-GET {{host}}/likes/1
+GET {{host}}/likes/user/1
+
+### GET post's likes
+GET {{host}}/likes/post/4
 
 ### POST a new like
 POST {{host}}/likes

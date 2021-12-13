@@ -44,6 +44,26 @@ class Posts {
         }
     }
 
+    async getPostsByLikesNumber() {
+        const query = `SELECT id_post,
+                              id_user,
+                              image,
+                              message,
+                              parent_post,
+                              is_removed,
+                              date_creation,
+                              number_of_likes
+                       FROM kwicker.posts
+                       ORDER BY number_of_likes DESC`;
+        try {
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e){
+            console.log(e.stack);
+            throw new Error("Error while getting all posts ordered by number of likes from the db.");
+        }
+    }
+
     /**
      * Add a new post to the db
      * @param body

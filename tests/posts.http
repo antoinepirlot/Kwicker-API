@@ -1,8 +1,24 @@
+### POST register
+POST {{host}}/users/login
+Content-Type: application/json
+
+{
+  "email": "antoine@vinci.be",
+  "password": "06192000"
+}
+
+> {%
+    client.global.set("usertoken", response.body.token);
+ %}
+
 ### GET all posts
 GET {{host}}/posts
 
 ### GET all posts from a user
-GET {{host}}/posts/1
+GET {{host}}/posts/user/1
+
+### GET all posts ordered by number of likes
+GET {{host}}/posts/orderbylike
 
 ### POST add a new post
 POST {{host}}/posts
