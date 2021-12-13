@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { Follows }  = require('../models/follows');
-const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
+const { authorizeUser } = require('../utils/authorize');
 const followsModel = new Follows();
 
 router.get("/followers/:idUser", authorizeUser, async function (req, res, next) {
@@ -23,6 +23,5 @@ router.delete("/:idUser", authorizeUser, async function (req, res, next) {
     if (!follow) return res.status(409).end();
     return res.json(follow);
 });
-
 
 module.exports = router;

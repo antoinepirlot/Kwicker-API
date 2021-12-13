@@ -10,7 +10,7 @@ CREATE TABLE kwicker.users
     lastname      VARCHAR(50)  NOT NULL CHECK (lastname <> ''),
     email         VARCHAR(100) NOT NULL CHECK (email <> '') UNIQUE,
     username      VARCHAR(100) NOT NULL CHECK (username <> '') UNIQUE,
-    image         VARCHAR(100) CHECK (image <> ''),
+    image         BYTEA        NULL     CHECK (image <> ''),
     password      VARCHAR(100) NOT NULL CHECK (password <> ''),
     is_active     BOOLEAN      NOT NULL DEFAULT TRUE,
     is_admin      BOOLEAN      NOT NULL DEFAULT FALSE,

@@ -10,6 +10,18 @@ class Users {
   constructor() {
   }
 
+
+/*
+*
+*  ░██████╗░███████╗████████╗
+*  ██╔════╝░██╔════╝╚══██╔══╝
+*  ██║░░██╗░█████╗░░░░░██║░░░
+*  ██║░░╚██╗██╔══╝░░░░░██║░░░
+*  ╚██████╔╝███████╗░░░██║░░░
+*  ░╚═════╝░╚══════╝░░░╚═╝░░░
+*
+**/
+
   async getAllActiveUsers() {
     const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
                     FROM kwicker.users WHERE is_active = TRUE`;
@@ -72,19 +84,17 @@ class Users {
     }
   }
 
-  async addUser(body) {
-    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
-    const query = {
-      name: 'insert-user',
-      text: 'INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, $4, NULL, $5, DEFAULT, DEFAULT, NULL, DEFAULT)',
-      values: [body.forename, body.lastname, body.email, body.username, hashedPassword],
-    };
-    try {
-      return await db.query(query) != null;
-    } catch (e) {
-      return false;
-    }
-  }
+
+/*
+*
+*  ██████╗░███████╗██╗░░░░░███████╗████████╗███████╗
+*  ██╔══██╗██╔════╝██║░░░░░██╔════╝╚══██╔══╝██╔════╝
+*  ██║░░██║█████╗░░██║░░░░░█████╗░░░░░██║░░░█████╗░░
+*  ██║░░██║██╔══╝░░██║░░░░░██╔══╝░░░░░██║░░░██╔══╝░░
+*  ██████╔╝███████╗███████╗███████╗░░░██║░░░███████╗
+*  ╚═════╝░╚══════╝╚══════╝╚══════╝░░░╚═╝░░░╚══════╝
+*
+**/
 
   async deleteUser(id) {
     const query = `UPDATE kwicker.users SET is_active = FALSE WHERE id_user = $1`;
@@ -96,13 +106,28 @@ class Users {
     }
   }
 
-  async updateUser(id, body) {
-    const query = `UPDATE kwicker.users SET is_active = FALSE WHERE id_user = $1`;
+
+/*
+*
+*  ██████╗░░█████╗░░██████╗████████╗
+*  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+*  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+*  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+*  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+*  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+*
+**/
+
+  async addUser(body) {
+    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
+    const query = {
+      name: 'insert-user',
+      text: 'INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, $4, NULL, $5, DEFAULT, DEFAULT, NULL, DEFAULT)',
+      values: [body.forename, body.lastname, body.email, body.username, hashedPassword],
+    };
     try {
-      const { rows } = await db.query(query, [id]);
-      return rows;
+      return await db.query(query) != null;
     } catch (e) {
-      console.log(e.stack);
       return false;
     }
   }
@@ -120,9 +145,9 @@ class Users {
     };
 
     const token = jwt.sign(
-      { idUser: authenticatedUser.idUser },
-      jwtSecret,
-      { expiresIn: LIFETIME_JWT }
+        { idUser: authenticatedUser.idUser },
+        jwtSecret,
+        { expiresIn: LIFETIME_JWT }
     );
 
     authenticatedUser.token = token;
@@ -147,13 +172,66 @@ class Users {
     };
 
     const token = jwt.sign(
-      { idUser: authenticatedUser.idUser },
-      jwtSecret,
-      { expiresIn: LIFETIME_JWT }
+        { idUser: authenticatedUser.idUser },
+        jwtSecret,
+        { expiresIn: LIFETIME_JWT }
     );
 
     authenticatedUser.token = token;
     return authenticatedUser;
+  }
+
+
+/*
+*
+*  ██╗░░░██╗██████╗░██████╗░░█████╗░████████╗███████╗
+*  ██║░░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+*  ██║░░░██║██████╔╝██║░░██║███████║░░░██║░░░█████╗░░
+*  ██║░░░██║██╔═══╝░██║░░██║██╔══██║░░░██║░░░██╔══╝░░
+*  ╚██████╔╝██║░░░░░██████╔╝██║░░██║░░░██║░░░███████╗
+*  ░╚═════╝░╚═╝░░░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+*
+**/
+
+  async updateUserForename(id, forename) {
+    const query = `UPDATE kwicker.users SET forename = $1 WHERE id_user = $2`;
+    try {
+      return await db.query(query, [forename, id]) != null;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
+  }
+
+  async updateUserLastname(id, lastname) {
+    const query = `UPDATE kwicker.users SET lastname = $1 WHERE id_user = $2`;
+    try {
+      return await db.query(query, [lastname, id]) != null;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
+  }
+
+  async updateUserBiography(id, biography) {
+    const query = `UPDATE kwicker.users SET biography = $1 WHERE id_user = $2`;
+    try {
+      return await db.query(query, [biography, id]) != null;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
+  }
+
+  async updateUserImage(id, image) {
+    const query = `UPDATE kwicker.users SET image = $1 WHERE id_user = $2`;
+    try {
+      const { rows } = await db.query(query, [image, id]);
+      return rows;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
   }
 }
 

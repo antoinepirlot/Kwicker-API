@@ -5,6 +5,27 @@ const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
 const userModel = new Users();
 
 
+/*
+*
+* ░██████╗░███████╗████████╗
+* ██╔════╝░██╔════╝╚══██╔══╝
+* ██║░░██╗░█████╗░░░░░██║░░░
+* ██║░░╚██╗██╔══╝░░░░░██║░░░
+* ╚██████╔╝███████╗░░░██║░░░
+* ░╚═════╝░╚══════╝░░░╚═╝░░░
+*
+**/
+
+// // getAllActiveUsers()
+// router.get('/image', async function(req, res, next) {
+//   const fs = require("fs");
+//   const bufferedFile = fs.readFileSync(__dirname + "/../image/Image_created_with_a_mobile_phone.png", { encoding: 'hex' });
+//   const fileData = `\\x${bufferedFile}`;
+//   console.log(fileData)
+//   return res.json(await userModel.updateUserImage(1, fileData));
+// });
+
+
 // getAllActiveUsers()
 router.get('/', authorizeAdmin, async function(req, res, next) {
   return res.json(await userModel.getAllActiveUsers());
@@ -21,22 +42,18 @@ router.get('/profile/:email', authorizeUser, async function(req, res) {
   return res.json(await userModel.getProfileInformationsByEmail(req.params.email));
 });
 
-// updateUser()
-router.put('/:idUser', authorizeUser, async function(req, res, next) {
-  if (!req.body ||
-    (req.body.forename && !req.body.forename.trim()) ||
-    (req.body.lastname && !req.body.lastname.trim()) ||
-    (req.body.image && !req.body.image.trim()) ||
-    (req.body.biography && !req.body.biography.trim())
-  ) 
-    return res.status(400).end();
 
-  if (!req.user.is_admin && req.params.idUser != req.session.id_user) return res.status(401).end();
+/*
+*
+*  ██████╗░███████╗██╗░░░░░███████╗████████╗███████╗
+*  ██╔══██╗██╔════╝██║░░░░░██╔════╝╚══██╔══╝██╔════╝
+*  ██║░░██║█████╗░░██║░░░░░█████╗░░░░░██║░░░█████╗░░
+*  ██║░░██║██╔══╝░░██║░░░░░██╔══╝░░░░░██║░░░██╔══╝░░
+*  ██████╔╝███████╗███████╗███████╗░░░██║░░░███████╗
+*  ╚═════╝░╚══════╝╚══════╝╚══════╝░░░╚═╝░░░╚══════╝
+*
+**/
 
-  const updatedUser = userModel.updateUser(req.params.idUser, req.body);
-  if (!updatedUser) return res.status(404).end();
-  return res.json(updatedUser);
-});
 
 // delete()
 router.delete("/:idUser", authorizeUser, async function(req, res, next) {
@@ -46,6 +63,18 @@ router.delete("/:idUser", authorizeUser, async function(req, res, next) {
   if (!req.user.is_admin) req.session = null;
   return res.json(deletedUser);
 });
+
+
+/*
+*
+*  ██████╗░░█████╗░░██████╗████████╗
+*  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+*  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+*  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+*  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+*  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+*
+**/
 
 // register()
 router.post("/register", async function (req, res, next) {
@@ -84,6 +113,54 @@ router.post("/login", async function (req, res, next) {
   req.session.token = authenticatedUser.token;
 
   return res.json(authenticatedUser);
+});
+
+
+/*
+*
+*  ██╗░░░██╗██████╗░██████╗░░█████╗░████████╗███████╗
+*  ██║░░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+*  ██║░░░██║██████╔╝██║░░██║███████║░░░██║░░░█████╗░░
+*  ██║░░░██║██╔═══╝░██║░░██║██╔══██║░░░██║░░░██╔══╝░░
+*  ╚██████╔╝██║░░░░░██████╔╝██║░░██║░░░██║░░░███████╗
+*  ░╚═════╝░╚═╝░░░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+*
+**/
+
+// updateUserForename()
+router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
+  if (!req.body ||
+      !req.body.forename || !req.body.forename.trim()
+  )
+    return res.status(400).end();
+  if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
+  const updatedUser = await userModel.updateUserForename(req.params.idUser, req.body.forename);
+  if (!updatedUser) return res.status(403).end();
+  return res.json(updatedUser);
+});
+
+// updateUserLastname()
+router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
+  if (!req.body ||
+      !req.body.lastname || !req.body.lastname.trim()
+  )
+    return res.status(400).end();
+  if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
+  const updatedUser = await userModel.updateUserLastname(req.params.idUser, req.body.lastname);
+  if (!updatedUser) return res.status(403).end();
+  return res.json(updatedUser);
+});
+
+// updateUserBiography()
+router.put('/biography/:idUser', authorizeUser, async function(req, res, next) {
+  if (!req.body ||
+      !req.body.biography || !req.body.biography.trim()
+  )
+    return res.status(400).end();
+  if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
+  const updatedUser = await userModel.updateUserBiography(req.params.idUser, req.body.biography);
+  if (!updatedUser) return res.status(403).end();
+  return res.json(updatedUser);
 });
 
 module.exports = router;

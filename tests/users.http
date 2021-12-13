@@ -51,6 +51,33 @@ Authorization: {{adminToken}}
 ### disconnect()
 GET {{host}}/users/disconnect
 
-
 ### delete()
 DELETE {{host}}/users/90
+Authorization: {{userToken}}
+
+### updateUserForename()
+PUT {{host}}/users/forename/5
+Content-Type: application/json
+Authorization: {{userToken}}
+
+{
+  "forename":"oui"
+}
+
+### updateUserLastname()
+PUT {{host}}/users/lastname/3
+Content-Type: application/json
+Authorization: {{userToken}}
+
+{
+  "lastname":"oui"
+}
+
+### updateUserBiography()
+PUT {{host}}/users/biography/5
+Content-Type: application/json
+Authorization: {{userToken}}
+
+{
+  "biography":"test"
+}
