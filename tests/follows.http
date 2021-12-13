@@ -1,11 +1,15 @@
-### getFollower()
-GET {{host}}/follows/followers/1
+### getFollowers()
+GET {{host}}/follows/followers/87
 Authorization: {{userToken}}
 
 ### getFollowed()
-GET {{host}}/follows/followeds/1
+GET {{host}}/follows/followeds/87
 Authorization: {{userToken}}
 
-### addUser()
-POST {{host}}/follows/3
+### addFollow()
+POST {{host}}/follows/1
+Authorization: {{userToken}}
+
+### removeFollow()
+DELETE {{host}}/follows/88
 Authorization: {{userToken}}

@@ -92,7 +92,6 @@ class Users {
       const { rows } = await db.query(query, [id]);
       return rows[0];
     } catch (e) {
-      console.log(e.stack);
       return false;
     }
   }

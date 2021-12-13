@@ -1,34 +1,59 @@
+const db = require("../db/db");
 
-const defaultItems = [
-    {
-        idFollow: 1,
-        idUserFollowed: 1,
-        idUserFollower: 2
-    },
-    {
-        idFollow: 2,
-        idUserFollowed: 2,
-        idUserFollower: 1
-    },
-];
 class Follows {
     constructor() {
     }
 
-    addOne(idFollower, idFollowed) {
-        return null;
+    async addFollow(idFollowed, idFollower) {
+        if (idFollower == idFollowed) return;
+        const query = {
+            name: 'insert-follow',
+            text: 'INSERT INTO kwicker.follows VALUES ($1, $2)',
+            values: [idFollowed, idFollower],
+        };
+        try {
+            return await db.query(query) != null;
+        } catch (e) {
+            return false;
+        }
     }
 
-    deleteOne(idFollower, idFollowed) {
-        return null;
+    async deleteFollow(idFollowed, idFollower) {
+        const query = {
+            name: 'remove-follow',
+            text: 'DELETE FROM kwicker.follows WHERE id_user_followed = $1 AND id_user_follower = $2',
+            values: [idFollowed, idFollower],
+        };
+        try {
+            const deleted = await db.query(query);
+            return deleted.rowCount === 1;
+        } catch (e) {
+            return false;
+        }
     }
 
-    getFollowers(idUser) {
-        return null;
+    async getFollowers(idUser) {
+        const query = `SELECT id_user_follower
+                        FROM kwicker.follows WHERE id_user_followed = $1`;
+        try {
+            const { rows } = await db.query(query, [idUser]);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            return false;
+        }
     }
 
-    getFolloweds(idUser) {
-        return null;
+    async getFolloweds(idUser) {
+        const query = `SELECT id_user_followed
+                        FROM kwicker.follows WHERE id_user_follower = $1`;
+        try {
+            const { rows } = await db.query(query, [idUser]);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            return false;
+        }
     }
 }
 

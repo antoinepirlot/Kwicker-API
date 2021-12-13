@@ -5,71 +5,46 @@ const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
 const userModel = new Users();
 
 
-
-router.get('/profile/:email', async function(req, res) {
-  return res.json(await userModel.getProfileInformationsByEmail(req.params.email));
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
 // getAllActiveUsers()
-router.get('/', async function(req, res, next) {
+router.get('/', authorizeAdmin, async function(req, res, next) {
   return res.json(await userModel.getAllActiveUsers());
 });
 
 // disconnect()
-router.get("/disconnect", function (req, res, next) {
-  if (!req.session) return res.status(404).end();
+router.get("/disconnect", authorizeUser, function (req, res, next) {
   req.session = null;
   return res.status(200).end();
 });
 
-// getUserById()
-router.get('/:idUser', async function(req, res, next) {
-  const user = await userModel.getUserById(req.params.idUser);
-  if (!user) return res.status(404).end();
-  return res.json(user);
-});
-
-// getUserByEmail()
-router.get('/email/:email', async function(req, res, next) {
-  const user = await userModel.getUserByEmail(req.params.email);
-  if (!user) return res.status(404).end();
-  return res.json(user);
+// getProfileInformationsByEmail()
+router.get('/profile/:email', authorizeUser, async function(req, res) {
+  return res.json(await userModel.getProfileInformationsByEmail(req.params.email));
 });
 
 // updateUser()
-router.put('/:idUser', async function(req, res, next) {
+router.put('/:idUser', authorizeUser, async function(req, res, next) {
   if (!req.body ||
     (req.body.forename && !req.body.forename.trim()) ||
     (req.body.lastname && !req.body.lastname.trim()) ||
-    (req.body.email && !req.body.email.trim()) ||
-    (req.body.username && !req.body.username.trim()) ||
-    (req.body.username && !req.body.username.trim()) ||
+    (req.body.image && !req.body.image.trim()) ||
     (req.body.biography && !req.body.biography.trim())
   ) 
     return res.status(400).end();
 
-  if (req.params.idUser !== req.session.idUser && !req.user.isAdmin) return res.status(401).end();
+  if (!req.user.is_admin && req.params.idUser != req.session.id_user) return res.status(401).end();
 
   const updatedUser = userModel.updateUser(req.params.idUser, req.body);
   if (!updatedUser) return res.status(404).end();
   return res.json(updatedUser);
 });
 
-// Delete
-router.delete("/:idUser", async function(req, res, next) {
-  return res.json(userModel.deleteUser(req.params.idUser));
+// delete()
+router.delete("/:idUser", authorizeUser, async function(req, res, next) {
+  if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
+  const deletedUser = userModel.deleteUser(req.params.idUser);
+  if (!deletedUser) return res.status(404).end();
+  if (!req.user.is_admin) req.session = null;
+  return res.json(deletedUser);
 });
 
 // register()

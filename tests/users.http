@@ -1,21 +1,12 @@
 
-
-
-
-
-
-
-
-
-
 ### login() as admin
 # @name admin
 POST {{host}}/users/login
 Content-Type: application/json
 
 {
-    "email":"francois.bardijn@vinci.be",
-    "password":"admin"
+    "email":"test3.test@student.vinci.be",
+    "password":"test"
 }
 
 > {% client.global.set("adminToken", response.body.token);%}
@@ -26,7 +17,7 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-    "email":"test3.test@student.vinci.be",
+    "email":"test6.test@student.vinci.be",
     "password":"test"
 }
 
@@ -41,8 +32,8 @@ Content-Type: application/json
 {
   "forename":"test",
   "lastname":"test",
-  "email":"test3.test@student.vinci.be",
-  "username":"test3",
+  "email":"test6.test@student.vinci.be",
+  "username":"test6",
   "password":"test"
 }
 
@@ -57,18 +48,9 @@ Authorization: {{userToken}}
 GET {{host}}/users
 Authorization: {{adminToken}}
 
-
-### getUserById()
-GET {{host}}/users/1
-Authorization: {{userToken}}
-
-### getUserByEmail()
-GET {{host}}/users/email/antoine.pirlot@vinci.be
-Authorization: {{userToken}}
-
 ### disconnect()
 GET {{host}}/users/disconnect
 
 
 ### delete()
-DELETE {{host}}/users/85
+DELETE {{host}}/users/90
