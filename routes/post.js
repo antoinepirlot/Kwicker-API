@@ -21,7 +21,7 @@ router.get("/", authorizeUser, async (req, res) => {
 /**
  * GET all posts from a user identified by its id
  */
-router.get("/:id_user", authorizeUser, async (req, res) => {
+router.get("/user/:id_user", authorizeUser, async (req, res) => {
     console.log("GET/ : Posts from a user");
     try {
         const posts = await postsModel.getUserPosts(req.params.id_user);
@@ -29,6 +29,16 @@ router.get("/:id_user", authorizeUser, async (req, res) => {
             return res.sendStatus(404);
         return res.json(posts);
     } catch (e) {
+        return res.sendStatus(502);
+    }
+});
+
+router.get("/orderbylike", authorizeUser, async (req, res) => {
+    console.log("GET/ : Posts ordered by number of likes");
+    try{
+        const posts = await postsModel.getPostsByLikesNumber();
+        return res.json(posts);
+    } catch (e){
         return res.sendStatus(502);
     }
 });
