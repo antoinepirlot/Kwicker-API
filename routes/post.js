@@ -1,6 +1,7 @@
 const express = require("express");
 const db = require("../db/db");
 const {Posts} = require("../models/posts");
+const {authorizeUser} = require("../utils/authorize");
 
 const router = express.Router();
 const postsModel = new Posts();
@@ -8,11 +9,11 @@ const postsModel = new Posts();
 /**
  * GET all posts
  */
-router.get("/", async (req, res) => {
-    try{
+router.get("/", authorizeUser, async (req, res) => {
+    try {
         const posts = await postsModel.getAllPosts();
         return res.json(posts);
-    } catch (e){
+    } catch (e) {
         return res.sendStatus(502);
     }
 });
@@ -20,14 +21,14 @@ router.get("/", async (req, res) => {
 /**
  * GET all posts from a user identified by its id
  */
-router.get("/:id_user", async (req, res) => {
+router.get("/:id_user", authorizeUser, async (req, res) => {
     console.log("GET/ : Posts from a user");
     try {
         const posts = await postsModel.getUserPosts(req.params.id_user);
-        if(posts.length === 0)
+        if (posts.length === 0)
             return res.sendStatus(404);
         return res.json(posts);
-    } catch (e){
+    } catch (e) {
         return res.sendStatus(502);
     }
 });
@@ -35,14 +36,14 @@ router.get("/:id_user", async (req, res) => {
 /**
  * POST add a new post to the db
  */
-router.post("/", async (req, res) => {
+router.post("/", authorizeUser, async (req, res) => {
     console.log("POST/");
-    if(!req.body)
+    if (!req.body)
         return res.sendStatus(400);
-    try{
+    try {
         await postsModel.createPost(req.body);
         return res.sendStatus(201);
-    } catch (e){
+    } catch (e) {
         return res.sendStatus(502);
     }
 });
@@ -50,16 +51,16 @@ router.post("/", async (req, res) => {
 /**
  * PUT update a post identified by its id
  */
-router.put("/:id_post", async (req, res) => {
+router.put("/:id_post", authorizeUser, async function (req, res) {
     console.log("PUT/ Update a post");
-    if(!req.body || !req.body.message)
+    if (!req.body || !req.body.message)
         return res.sendStatus(400);
-    try{
+    try {
         const rowCount = await postsModel.updatePost(req.params.id_post, req.body);
-        if(rowCount === 0)
+        if (rowCount === 0)
             return res.sendStatus(404);
         return res.sendStatus(200);
-    } catch (e){
+    } catch (e) {
         return res.sendStatus(502);
     }
 });
@@ -67,14 +68,14 @@ router.put("/:id_post", async (req, res) => {
 /**
  * DELETE a post identified by its id
  */
-router.delete("/:id_post", async (req, res) => {
+router.delete("/:id_post", authorizeUser, async (req, res) => {
     console.log("DELETE");
-    try{
+    try {
         const rowCount = await postsModel.removePost(req.params.id_post);
-        if(rowCount === 0)
+        if (rowCount === 0)
             return res.sendStatus(404);
         return res.sendStatus(200);
-    } catch (e){
+    } catch (e) {
         res.sendStatus(502);
     }
 });
