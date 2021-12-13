@@ -153,12 +153,13 @@ class Users {
     if (!match) return;
 
     const authenticatedUser = {
-      idUser: userFound.id_user,
+      id_user: userFound.id_user,
+      is_admin: userFound.is_admin,
       token: "None",
     };
 
     const token = jwt.sign(
-        { idUser: authenticatedUser.idUser },
+        { idUser: authenticatedUser.id_user },
         jwtSecret,
         { expiresIn: LIFETIME_JWT }
     );
@@ -168,19 +169,12 @@ class Users {
   }
 
   async register(body) {
-    const isInserted = await this.addUser(
-        {
-          forename: body.forename,
-          lastname: body.lastname,
-          email: body.email,
-          username: body.username,
-          password: body.password
-        }
-    );
+    const isInserted = await this.addUser(body);
     if (!isInserted) return;
     const idUser = await this.getIdByEmail(body.email);
     const authenticatedUser = {
-      idUser: idUser,
+      id_user: idUser,
+      is_admin: false,
       token: "None",
     };
 
