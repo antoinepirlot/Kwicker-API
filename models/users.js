@@ -2,7 +2,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const db = require("../db/db");
-const jwtSecret = "motdepasse";
+const jwtSecret = require("../config/jwt_secret");
 const LIFETIME_JWT = 24 * 60 * 60 * 1000;
 const saltRounds = 10;
 
@@ -11,7 +11,8 @@ class Users {
   }
 
   async getAllActiveUsers() {
-    const query = `SELECT id_user, forename, lastname, email, image, password, is_active, is_admin FROM kwicker.users WHERE is_active = TRUE`;
+    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
+                    FROM kwicker.users WHERE is_active = TRUE`;
     try {
       const { rows } = await db.query(query);
       return rows;
@@ -22,7 +23,8 @@ class Users {
   }
 
   async getUserByEmail(email) {
-    const query = `SELECT * FROM kwicker.users u WHERE u.email = $1`;
+    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
+                    FROM kwicker.users u WHERE u.email = $1`;
     try {
       const { rows } = await db.query(query, [email]);
       return rows[0];
@@ -33,7 +35,8 @@ class Users {
   }
 
   async getUserById(id) {
-    const query = `SELECT * FROM kwicker.users u WHERE u.id_user = $1`;
+    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
+                    FROM kwicker.users u WHERE u.id_user = $1`;
     try {
       const { rows } = await db.query(query, [id]);
       return rows[0];
@@ -43,15 +46,42 @@ class Users {
     }
   }
 
-  async addUser(body) {
-    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
-    const query = `INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, NULL, $4, DEFAULT, DEFAULT)`;
+  async getIdByEmail(email) {
+    const query = `SELECT id_user FROM kwicker.users WHERE email = $1`;
     try {
-      await db.query(query, [body.forename, body.lastname, body.email, hashedPassword])
-      console.log(rows)
-      return true;
+      const { rows } = await db.query(query, [email]);
+      if (!rows || rows.length === 0) return;
+      return rows[0].id_user;
     } catch (e) {
       console.log(e.stack);
+      return false;
+    }
+  }
+
+  async getProfileInformationsByEmail(email) {
+    const query = `SELECT id_user, forename, lastname, email, username, is_active, is_admin, biography, date_creation 
+                   FROM kwicker.users WHERE email = $1`;
+    try {
+      const { rows } = await db.query(query, [email]);
+
+      if (!rows || rows.length === 0) return;
+      return rows[0];
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
+  }
+
+  async addUser(body) {
+    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
+    const query = {
+      name: 'insert-user',
+      text: 'INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, $4, NULL, $5, DEFAULT, DEFAULT, NULL, DEFAULT)',
+      values: [body.forename, body.lastname, body.email, body.username, hashedPassword],
+    };
+    try {
+      return await db.query(query) != null;
+    } catch (e) {
       return false;
     }
   }
@@ -60,7 +90,7 @@ class Users {
     const query = `UPDATE kwicker.users SET is_active = FALSE WHERE id_user = $1`;
     try {
       const { rows } = await db.query(query, [id]);
-      return rows;
+      return rows[0];
     } catch (e) {
       console.log(e.stack);
       return false;
@@ -101,18 +131,19 @@ class Users {
   }
 
   async register(body) {
-    let newUser = await this.addUser(
+    const isInserted = await this.addUser(
         {
           forename: body.forename,
           lastname: body.lastname,
           email: body.email,
-          //username: body.username,
+          username: body.username,
           password: body.password
         }
     );
-    if (!newUser) return;
+    if (!isInserted) return;
+    const idUser = await this.getIdByEmail(body.email);
     const authenticatedUser = {
-      idUser: newUser.id_user,
+      idUser: idUser,
       token: "None",
     };
 

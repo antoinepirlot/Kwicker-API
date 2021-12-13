@@ -1,5 +1,13 @@
 
 
+
+
+
+
+
+
+
+
 ### login() as admin
 # @name admin
 POST {{host}}/users/login
@@ -18,8 +26,8 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-    "email":"guillaume.feron@student.vinci.be",
-    "password":"user"
+    "email":"test3.test@student.vinci.be",
+    "password":"test"
 }
 
 > {% client.global.set("userToken", response.body.token);%}
@@ -33,37 +41,34 @@ Content-Type: application/json
 {
   "forename":"test",
   "lastname":"test",
-  "email":"test.eron@student.vinci.be",
-  "password":"user"
+  "email":"test3.test@student.vinci.be",
+  "username":"test3",
+  "password":"test"
 }
 
 > {% client.global.set("userToken", response.body.token);%}
 
-### getAll()
+
+### getProfileInformationsByEmail(email)
+GET {{host}}/users/profile/francois.bardijn@vinci.be
+Authorization: {{userToken}}
+
+### getAllActiveUsers()
 GET {{host}}/users
 Authorization: {{adminToken}}
 
 
 ### getUserById()
-GET {{host}}/users/8
+GET {{host}}/users/1
 Authorization: {{userToken}}
 
-
-### updateUser()
-PUT {{host}}/users/1
-Content-Type: application/json
+### getUserByEmail()
+GET {{host}}/users/email/antoine.pirlot@vinci.be
 Authorization: {{userToken}}
-
-{
-    "forename":"Test",
-    "lastname":"Test",
-    "email":"Test.Test@student.vinci.be",
-    "password":"Test"
-}
 
 ### disconnect()
 GET {{host}}/users/disconnect
 
 
 ### delete()
-DELETE {{host}}/users/5
+DELETE {{host}}/users/85

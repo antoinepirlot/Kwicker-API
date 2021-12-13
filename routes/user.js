@@ -4,6 +4,24 @@ const { Users }  = require('../models/users');
 const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
 const userModel = new Users();
 
+
+
+router.get('/profile/:email', async function(req, res) {
+  return res.json(await userModel.getProfileInformationsByEmail(req.params.email));
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 // getAllActiveUsers()
 router.get('/', async function(req, res, next) {
   return res.json(await userModel.getAllActiveUsers());
@@ -61,7 +79,7 @@ router.post("/register", async function (req, res, next) {
     !req.body.forename || !req.body.forename.trim() ||
     !req.body.lastname || !req.body.lastname.trim() ||
     !req.body.email || !req.body.email.trim() ||
-    // !req.body.username || !req.body.username.trim() ||
+    !req.body.username || !req.body.username.trim() ||
     !req.body.password || !req.body.password.trim()
   )
     return res.status(400).end();
