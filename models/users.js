@@ -70,6 +70,19 @@ class Users {
     }
   }
 
+  async getUserByUsername(username) {
+    const query = `SELECT id_user, forename, lastname, email, username, password, is_active, is_admin, biography, date_creation 
+                   FROM kwicker.users WHERE username = $1`;
+    try {
+      const { rows } = await db.query(query, [username]);
+      if (!rows || rows.length === 0) return;
+      return rows[0];
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
+  }
+
   async getProfileInformationsByEmail(email) {
     const query = `SELECT id_user, forename, lastname, email, username, is_active, is_admin, biography, date_creation 
                    FROM kwicker.users WHERE email = $1`;
@@ -133,7 +146,7 @@ class Users {
   }
 
   async login(body) {
-    const userFound = await this.getUserByEmail(body.email);
+    const userFound = await this.getUserByUsername(body.username);
     if (!userFound) return;
 
     const match = await bcrypt.compare(body.password, userFound.password);

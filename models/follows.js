@@ -33,8 +33,7 @@ class Follows {
     }
 
     async getFollowers(idUser) {
-        const query = `SELECT id_user_follower
-                        FROM kwicker.follows WHERE id_user_followed = $1`;
+        const query = `SELECT id_user_follower FROM kwicker.follows WHERE id_user_followed = $1`;
         try {
             const { rows } = await db.query(query, [idUser]);
             return rows;
@@ -45,8 +44,7 @@ class Follows {
     }
 
     async getFolloweds(idUser) {
-        const query = `SELECT id_user_followed
-                        FROM kwicker.follows WHERE id_user_follower = $1`;
+        const query = `SELECT id_user_followed FROM kwicker.follows WHERE id_user_follower = $1`;
         try {
             const { rows } = await db.query(query, [idUser]);
             return rows;

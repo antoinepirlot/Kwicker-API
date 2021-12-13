@@ -17,7 +17,7 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-    "email":"test6.test@student.vinci.be",
+    "username":"test6",
     "password":"test"
 }
 
