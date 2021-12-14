@@ -34,6 +34,18 @@ class Users {
     }
   }
 
+  async getAllUsers() {
+    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
+                    FROM kwicker.users`;
+    try {
+      const { rows } = await db.query(query);
+      return rows;
+    } catch (e) {
+      console.log(e.stack);
+      return false;
+    }
+  }
+
   async getUserByEmail(email) {
     const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
                     FROM kwicker.users u WHERE u.email = $1`;

@@ -31,6 +31,11 @@ router.get('/', authorizeUser, async function(req, res, next) {
   return res.json(await userModel.getAllActiveUsers());
 });
 
+// getAllUsers()
+router.get('/all', authorizeAdmin, async function(req, res, next) {
+  return res.json(await userModel.getAllUsers());
+});
+
 // disconnect()
 router.get("/disconnect", authorizeUser, function (req, res, next) {
   req.session = null;
