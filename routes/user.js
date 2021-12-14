@@ -27,7 +27,7 @@ const userModel = new Users();
 
 
 // getAllActiveUsers()
-router.get('/', authorizeAdmin, async function(req, res, next) {
+router.get('/', authorizeUser, async function(req, res, next) {
   return res.json(await userModel.getAllActiveUsers());
 });
 
