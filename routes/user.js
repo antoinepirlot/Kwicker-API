@@ -194,4 +194,17 @@ router.put("/setadmin/:id_user", authorizeAdmin, async (req, res) => {
   }
 });
 
+// Set a member from admin to non admin
+router.put("/setnotadmin/:id_user", authorizeAdmin, async (req, res) => {
+  console.log("PUT/ Set user to non admin");
+  try {
+    const rowCount = await userModel.setNotAdmin(req.params.id_user);
+    if(rowCount === 0)
+      return res.sendStatus(404).end();
+    return res.sendStatus(200).end();
+  } catch (e) {
+    return res.sendStatus(502).end();
+  }
+});
+
 module.exports = router;
