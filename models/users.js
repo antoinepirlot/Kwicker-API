@@ -267,7 +267,6 @@ class Users {
     };
     try{
       const result = await db.query(query);
-      console.log(result);
       return result.rowCount;
     } catch (e) {
       console.log(e.stack);
