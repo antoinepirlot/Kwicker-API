@@ -86,11 +86,11 @@ EXECUTE PROCEDURE kwicker.add_like();
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
 VALUES ('Antoine', 'Pirlot', 'antoine.pirlot@vinci.be', 'lepirelot', 'mdp');
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
-VALUES ('Denis', 'Victor', 'victor.denis@vinci.be', 'vivi', 'mdp');
+VALUES ('Denis', 'Victor', 'victor.denis@vinci.be', 'vivi', '$2b$10$OSF1BQzAii/ERK/lDBceDekhEZWK4af/HYSeQ3nvIpJB8EaUTPLsS');
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
 VALUES ('Soulaymane', 'Gharroudi', 'soulaymane.gharroudi@vinci.be', 'souli', 'mdp');
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
-VALUES ('François', 'Bardijn', 'francois.bardijn@vinci.be', 'françois', 'mdp');
+VALUES ('François', 'Bardijn', 'francois.bardijn@vinci.be', 'françois', '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC');
 
 INSERT INTO kwicker.posts (id_user, message)
 VALUES (1, 'Hello World!');
