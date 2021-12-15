@@ -181,4 +181,16 @@ router.put("/activate/:id_user", authorizeAdmin, async (req, res) => {
   }
 });
 
+router.put("/setadmin/:id_user", authorizeAdmin, async (req, res) => {
+  console.log("PUT/ Set user admin");
+  try {
+    const rowCount = await userModel.setAdmin(req.params.id_user);
+    if(rowCount === 0)
+      return res.sendStatus(404).end();
+    return res.sendStatus(200).end();
+  } catch (e) {
+    return res.sendStatus(502).end();
+  }
+});
+
 module.exports = router;
