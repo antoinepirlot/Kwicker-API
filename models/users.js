@@ -273,6 +273,11 @@ class Users {
     }
   }
 
+  /**
+   * Set a user to admin
+   * @param id_user
+   * @returns {Promise<null|number|*>}
+   */
   async setAdmin(id_user) {
     const query = {
       text: `UPDATE kwicker.users
