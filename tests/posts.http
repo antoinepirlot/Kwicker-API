@@ -3,8 +3,8 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-  "email": "antoine@vinci.be",
-  "password": "06192000"
+  "username": "username",
+  "password": "psw"
 }
 
 > {%
@@ -13,9 +13,11 @@ Content-Type: application/json
 
 ### GET all posts
 GET {{host}}/posts
+Authorization: {{usertoken}}
 
 ### GET all posts from a user
 GET {{host}}/posts/user/1
+Authorization: {{usertoken}}
 
 ### GET all posts ordered by number of likes
 GET {{host}}/posts/orderbylike
@@ -37,8 +39,12 @@ Content-Type: application/json
 
 {
   "image": null,
-  "message": "J'ai modifié le message encore une fois :p"
+  "message": "Hello World!"
 }
+
+###PUT activate a post
+PUT {{host}}/posts/activate/1
+Authorization: {{usertoken}}
 
 ### DELETE a POST
 DELETE {{host}}/posts/4

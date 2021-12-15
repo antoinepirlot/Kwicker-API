@@ -140,6 +140,22 @@ class Posts {
         }
     }
 
+    async activatePost(id_post) {
+        const query = {
+            text: `UPDATE kwicker.posts
+                   SET is_removed = FALSE
+                   WHERE id_post = $1`,
+            values: [id_post]
+        };
+        try{
+            const result = await db.query(query);
+            return result.rowCount;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while activating a post from the database.");
+        }
+    }
+
     /**
      * Remove a post from the db
      * @param id_post

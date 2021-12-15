@@ -252,6 +252,69 @@ class Users {
       return false;
     }
   }
+
+  /**
+   * Activate the user an return 1 if it worked, otherwise 0
+   * @param id_user
+   * @returns {Promise<void>}
+   */
+  async activateUser(id_user) {
+    const query = {
+      text: `UPDATE kwicker.users
+             SET is_active = TRUE
+             WHERE id_user = $1`,
+      values: [escape(id_user)]
+    };
+    try{
+      const result = await db.query(query);
+      return result.rowCount;
+    } catch (e) {
+      console.log(e.stack);
+      throw new Error("Error while changing is_active to TRUE");
+    }
+  }
+
+  /**
+   * Set a user to admin
+   * @param id_user
+   * @returns {Promise<null|number|*>}
+   */
+  async setAdmin(id_user) {
+    const query = {
+      text: `UPDATE kwicker.users
+             SET is_admin = TRUE
+             WHERE id_user =  $1`,
+      values: [id_user]
+    };
+    try {
+      const result = await db.query(query);
+      return result.rowCount;
+    } catch (e) {
+      console.log(e.stack);
+      throw new Error("Error while changing is_admin to TRUE.");
+    }
+  }
+
+  /**
+   * Set a user from admin to non admin
+   * @param id_user
+   * @returns {Promise<null|number|*>}
+   */
+  async setNotAdmin(id_user) {
+    const query = {
+      text: `UPDATE kwicker.users
+             SET is_admin = FALSE
+             WHERE id_user = $1`,
+      values: [id_user]
+  };
+    try {
+      const result = await db.query(query);
+      return result.rowCount;
+    } catch (e) {
+      console.log(e.stack);
+      throw new Error("Error while changing is_admin to FALSE.");
+    }
+  }
 }
 
 module.exports = { Users };
