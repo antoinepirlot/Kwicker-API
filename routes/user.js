@@ -43,8 +43,8 @@ router.get("/disconnect", authorizeUser, function (req, res, next) {
 });
 
 // getProfileInformationsByEmail()
-router.get('/profile/:email', authorizeUser, async function(req, res) {
-  return res.json(await userModel.getProfileInformationsByEmail(req.params.email));
+router.get('/profile/:id', authorizeUser, async function(req, res) {
+  return res.json(await userModel.getProfileInformationsById(req.params.id));
 });
 
 

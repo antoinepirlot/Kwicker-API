@@ -11,7 +11,7 @@ CREATE TABLE kwicker.users
     email         VARCHAR(100) NOT NULL CHECK (email <> '') UNIQUE,
     username      VARCHAR(100) NOT NULL CHECK (username <> '') UNIQUE,
     image         BYTEA        NULL     CHECK (image <> ''),
-    password      VARCHAR(100) NOT NULL CHECK (password <> ''),
+    password      VARCHAR(60) NOT NULL CHECK (password <> ''),
     is_active     BOOLEAN      NOT NULL DEFAULT TRUE,
     is_admin      BOOLEAN      NOT NULL DEFAULT FALSE,
     biography     VARCHAR(500) NULL,
@@ -22,7 +22,7 @@ CREATE TABLE kwicker.posts
 (
     id_post         SERIAL PRIMARY KEY,
     id_user         INTEGER      NOT NULL,
-    image           VARCHAR(100) CHECK (image <> ''),
+    image           VARCHAR(300) CHECK (image <> '' OR image IS NULL),
     message         VARCHAR(300) NOT NULL CHECK (message <> ''),
     parent_post     INTEGER,
     is_removed      BOOLEAN      NOT NULL DEFAULT FALSE,
@@ -125,3 +125,19 @@ VALUES (3, 1, 'Hello Comment ça va?');
 
 INSERT INTO kwicker.messages (id_sender, id_recipient, message)
 VALUES (1, 4, 'Soulaymane m''a répondu');
+
+INSERT INTO kwicker.users (forename, lastname, email, username, password, biography, is_admin)
+VALUES ('François', 'Bardijn', 'guillaume.feron@student.vinci.be', 'gf', '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC', 'Famed singer-songwriter John Lennon founded the Beatles, a band that impacted the popular music scene like no other', true);
+
+
+INSERT INTO kwicker.users (forename, lastname, email, username, password, biography)
+VALUES ('Guillaume', 'Feron', 'francois.bardijn@student.vinci.be', 'fb', '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC', 'Known as the ''Queen of Tejano Music,'' Selena Quintanilla was a beloved Latin recording artist who was killed by the president of her fan club at the age of 23.');
+
+INSERT INTO kwicker.users (forename, lastname, email, username, password, is_active, biography)
+VALUES ('Alex', 'Ottoy', 'alex.ottoy@student.vinci.be', 'ao', '$2y$10$9dO3uO/2uSdMjpWMrCcCz.VzypZIYiKcxLSv8Xcm8HMXs5837wHpO', false, 'He was a scholar and minister who led the civil rights movement. After his assassination, he was memorialized by Martin Luther King Jr. Day.');
+
+
+-- INSERT INTO kwicker.posts(id_user,message,parent_post,is_removed,id_post) VALUES (1,'Lorem ipsum dolor sit amet. Aut veniam eaque nam quia nobis et recusandae tenetur qui nisi nihil sed temporibus maxime eum ullam inventore 33 quasi sunt. Et modi Quis sed voluptatem similique est quas magnam qui neque consequuntur? Et itaque velit ut Quis itaque et aliquam neque ea voluptas aperiam sit dicta nesciunt et consectetur dolorem qui praesentium omnis! Hic dolorem debitis sed libero suscipit ut eius doloremque!',NULL,false,1);
+-- INSERT INTO kwicker.posts(id_user,message,parent_post,is_removed,id_post) VALUES (1,'Sit quod eligendi sit magnam necessitatibus hic rerum blanditiis. Et facilis quidem id dolorem velit ut voluptatem nemo qui adipisci velit aut unde tempora et fugiat fugiat et neque omnis. Et sint porro et maxime facere nam consequatur omnis ut assumenda deleniti! Quo fugiat soluta et odio qui quisquam totam in illum provident et obcaecati magni eos iste fugiat et dicta laudantium.',NULL,false,2);
+-- INSERT INTO kwicker.posts(id_user,message,parent_post,is_removed,id_post) VALUES (1,'Sit dolor quibusdam et dolores officia eum accusamus excepturi et internos quibusdam aut ipsam dicta. Cum exercitationem voluptatibus et minus reiciendis sit officiis praesentium qui officiis dolor?',NULL,false,3);
+-- INSERT INTO kwicker.posts(id_user,message,parent_post,is_removed,id_post) VALUES (2,'Le lorem ipsum est, en imprimerie, une suite de mots sans signification utilisée à titre provisoire pour calibrer une mise en page, le texte définitif venant remplacer le faux-texte dès qu''il est prêt ou que la mise en page est achevée. Généralement, on utilise un texte en faux latin, le Lorem ipsum ou Lipsum.',NULL,false,4);

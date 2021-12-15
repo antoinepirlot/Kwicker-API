@@ -95,11 +95,11 @@ class Users {
     }
   }
 
-  async getProfileInformationsByEmail(email) {
+  async getProfileInformationsById(id) {
     const query = `SELECT id_user, forename, lastname, email, username, is_active, is_admin, biography, date_creation 
-                   FROM kwicker.users WHERE email = $1`;
+                   FROM kwicker.users WHERE id_user = $1`;
     try {
-      const { rows } = await db.query(query, [email]);
+      const { rows } = await db.query(query, [id]);
 
       if (!rows || rows.length === 0) return;
       return rows[0];
