@@ -115,7 +115,7 @@ class Posts {
     async activatePost(id_post) {
         const query = {
             text: `UPDATE kwicker.posts
-                   SET is_removed = false
+                   SET is_removed = FALSE
                    WHERE id_post = $1`,
             values: [id_post]
         };
