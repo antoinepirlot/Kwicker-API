@@ -2,7 +2,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const db = require("../db/db");
-const jwtSecret = require("../config/jwt_secret");
 const LIFETIME_JWT = 24 * 60 * 60 * 1000;
 const saltRounds = 10;
 
@@ -172,7 +171,7 @@ class Users {
 
     const token = jwt.sign(
         { idUser: authenticatedUser.id_user },
-        jwtSecret,
+        process.env.jwtSecret,
         { expiresIn: LIFETIME_JWT }
     );
 
@@ -192,7 +191,7 @@ class Users {
 
     const token = jwt.sign(
         { idUser: authenticatedUser.idUser },
-        jwtSecret,
+        process.env.jwtSecret,
         { expiresIn: LIFETIME_JWT }
     );
 
