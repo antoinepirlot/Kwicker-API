@@ -72,6 +72,28 @@ class Posts {
         }
     }
 
+    async getPostsWithLikesAndUser(isSorted) {
+        let query = `
+            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, COUNT(l.*) AS "likes"
+            FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
+                                 LEFT OUTER JOIN kwicker.likes l on p.id_post = l.id_post
+            WHERE p.is_removed = FALSE AND u.is_active = TRUE
+            GROUP BY u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation
+`;
+
+        if (isSorted === "true") query += `ORDER BY likes DESC`;
+        else query += `ORDER BY likes`;
+
+        console.log(query)
+        try {
+            const { rows } = await db.query(query);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            return false;
+        }
+    }
+
     /**
      * Add a new post to the db
      * @param body
