@@ -270,6 +270,7 @@ class Users {
       return result.rowCount;
     } catch (e) {
       console.log(e.stack);
+      throw new Error("Error while changing is_active to TRUE");
     }
   }
 
@@ -290,6 +291,7 @@ class Users {
       return result.rowCount;
     } catch (e) {
       console.log(e.stack);
+      throw new Error("Error while changing is_admin to TRUE.");
     }
   }
 
@@ -310,6 +312,7 @@ class Users {
       return result.rowCount;
     } catch (e) {
       console.log(e.stack);
+      throw new Error("Error while changing is_admin to FALSE.");
     }
   }
 }
