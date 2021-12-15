@@ -292,6 +292,26 @@ class Users {
       console.log(e.stack);
     }
   }
+
+  /**
+   * Set a user from admin to non admin
+   * @param id_user
+   * @returns {Promise<null|number|*>}
+   */
+  async setNotAdmin(id_user) {
+    const query = {
+      text: `UPDATE kwicker.users
+             SET is_admin = FALSE
+             WHERE id_user = $1`,
+      values: [id_user]
+  };
+    try {
+      const result = await db.query(query);
+      return result.rowCount;
+    } catch (e) {
+      console.log(e.stack);
+    }
+  }
 }
 
 module.exports = { Users };
