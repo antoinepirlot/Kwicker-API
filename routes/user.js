@@ -181,6 +181,7 @@ router.put("/activate/:id_user", authorizeAdmin, async (req, res) => {
   }
 });
 
+// Set a member to admin
 router.put("/setadmin/:id_user", authorizeAdmin, async (req, res) => {
   console.log("PUT/ Set user admin");
   try {
