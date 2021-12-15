@@ -1,7 +1,7 @@
 const express = require("express");
 const db = require("../db/db");
 const {Posts} = require("../models/posts");
-const {authorizeUser} = require("../utils/authorize");
+const {authorizeUser, authorizeAdmin} = require("../utils/authorize");
 
 const router = express.Router();
 const postsModel = new Posts();
@@ -69,6 +69,21 @@ router.put("/:id_post", authorizeUser, async function (req, res) {
         if (rowCount === 0)
             return res.sendStatus(404);
         return res.sendStatus(200);
+    } catch (e) {
+        return res.sendStatus(502);
+    }
+});
+
+/**
+ * PUT update a post to is_removed = FALSE
+ */
+router.put("/activate/:id_post", authorizeAdmin, async function (req, res) {
+    console.log("PUT/ activate a post");
+    try{
+        const rowCount = await postsModel.activatePost(req.params.id_post);
+        if(rowCount === 0)
+            return res.sendStatus(404).end();
+        return res.sendStatus(200).end();
     } catch (e) {
         return res.sendStatus(502);
     }
