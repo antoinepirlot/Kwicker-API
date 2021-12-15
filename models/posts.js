@@ -82,10 +82,10 @@ class Posts {
                        VALUES ($1, $2, $3, $4)`;
         try {
             await db.query(query,
-                [escape(body.id_user),
-                    escape(body.image),
+                [body.id_user,
+                    body.image,
                     escape(body.message),
-                    escape(body.parent_post)]);
+                    body.parent_post]);
         } catch (e) {
             console.log(e.stack);
             throw new Error("Error while creating post to database.");
