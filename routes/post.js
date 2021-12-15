@@ -42,6 +42,15 @@ router.get("/orderbylike", authorizeUser, async (req, res) => {
     }
 });
 
+router.get("/allPostWithLikesAndUser/:isSorted", authorizeUser, async (req, res) => {
+    try{
+        const posts = await postsModel.getPostsWithLikesAndUser(req.params.isSorted);
+        return res.json(posts);
+    } catch (e){
+        return res.sendStatus(502);
+    }
+});
+
 /**
  * POST add a new post to the db
  */
