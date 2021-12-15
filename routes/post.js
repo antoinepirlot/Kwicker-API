@@ -42,9 +42,9 @@ router.get("/orderbylike", authorizeUser, async (req, res) => {
     }
 });
 
-router.get("/allPostWithLikesAndUser/:isSorted", authorizeUser, async (req, res) => {
+router.get("/allPostWithLikesAndUser/:isSorted/:profilePosts", authorizeUser, async (req, res) => {
     try{
-        const posts = await postsModel.getPostsWithLikesAndUser(req.params.isSorted);
+        const posts = await postsModel.getPostsWithLikesAndUser(req.params.isSorted, req.params.profilePosts);
         return res.json(posts);
     } catch (e){
         return res.sendStatus(502);
