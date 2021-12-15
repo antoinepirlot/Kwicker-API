@@ -273,6 +273,21 @@ class Users {
       console.log(e.stack);
     }
   }
+
+  async setAdmin(id_user) {
+    const query = {
+      text: `UPDATE kwicker.users
+             SET is_admin = TRUE
+             WHERE id_user =  $1`,
+      values: [id_user]
+    };
+    try {
+      const result = await db.query(query);
+      return result.rowCount;
+    } catch (e) {
+      console.log(e.stack);
+    }
+  }
 }
 
 module.exports = { Users };
