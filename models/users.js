@@ -252,6 +252,27 @@ class Users {
       return false;
     }
   }
+
+  /**
+   * Activate the user an return 1 if it worked, otherwise 0
+   * @param id_user
+   * @returns {Promise<void>}
+   */
+  async activateUser(id_user) {
+    const query = {
+      text: `UPDATE kwicker.users
+             SET is_active = TRUE
+             WHERE id_user = $1`,
+      values: [escape(id_user)]
+    };
+    try{
+      const result = await db.query(query);
+      console.log(result);
+      return result.rowCount;
+    } catch (e) {
+      console.log(e.stack);
+    }
+  }
 }
 
 module.exports = { Users };
