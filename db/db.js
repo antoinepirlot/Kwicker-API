@@ -9,6 +9,7 @@ dbConfig = {
     password: process.env.DB_PASSWORD,
     ssl: {rejectUnauthorized: false}
 };
+
 const pool = new Pool(dbConfig);
 
 module.exports = {
