@@ -140,6 +140,36 @@ class Posts {
         }
     }
 
+    /**
+     * Select all posts liked by a user identified by its id
+     * @param id_user
+     * @returns {Promise<*>}
+     */
+    async getLikedPosts(id_user) {
+        const query = {
+            text: `SELECT id_post,
+                          id_user,
+                          image,
+                          message,
+                          parent_post,
+                          is_removed,
+                          date_creation,
+                          number_of_likes
+                   FROM kwicker.posts
+                   WHERE id_post IN (SELECT id_post
+                                     FROM kwicker.likes
+                                     WHERE id_user = $1)`,
+            values: [id_user]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting posts liked by the user from the dataase.");
+        }
+    }
+
     /*
     *
     *  ██████╗░░█████╗░░██████╗████████╗
