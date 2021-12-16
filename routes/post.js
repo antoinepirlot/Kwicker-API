@@ -61,6 +61,17 @@ router.get("/allPostWithLikesAndUser/:profilePosts", authorizeUser, async (req, 
     }
 });
 
+// GET get all posts liked by a user
+router.get("/postsLiked/:id_user", authorizeUser, async (req, res) => {
+    console.log("GET/ postsLiked");
+    try {
+        const posts = await postsModel.getLikedPosts(req.params.id_user);
+        return res.json(posts);
+    } catch (e) {
+        return res.sendStatus(502).end();
+    }
+});
+
 /*
 *
 *  ██████╗░░█████╗░░██████╗████████╗
