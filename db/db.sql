@@ -83,6 +83,22 @@ CREATE TRIGGER trigger_add_like
     FOR EACH ROW
 EXECUTE PROCEDURE kwicker.add_like();
 
+CREATE OR REPLACE FUNCTION kwicker.delete_like() RETURNS TRIGGER AS
+$$
+BEGIN
+    UPDATE kwicker.posts
+    SET number_of_likes = number_of_likes - 1
+    WHERE id_post = OLD.id_post;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_delete_like
+    AFTER DELETE
+    ON kwicker.likes
+    FOR EACH ROW
+EXECUTE PROCEDURE kwicker.delete_like();
+
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
 VALUES ('Antoine', 'Pirlot', 'antoine.pirlot@vinci.be', 'lepirelot', 'mdp');
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
