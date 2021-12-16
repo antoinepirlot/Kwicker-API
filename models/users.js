@@ -151,7 +151,8 @@ class Users {
       values: [body.forename, body.lastname, body.email, body.username, hashedPassword],
     };
     try {
-      return await db.query(query) != null;
+      const result = await db.query(query);
+      return result.rowCount;
     } catch (e) {
       return false;
     }
@@ -181,8 +182,8 @@ class Users {
   }
 
   async register(body) {
-    const isInserted = await this.addUser(body);
-    if (!isInserted) return;
+    const rowCount = await this.addUser(body);
+    if (rowCount === 0) return;
     return await this.login(body);
   }
 
