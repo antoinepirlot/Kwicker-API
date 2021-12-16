@@ -92,9 +92,8 @@ class Posts {
         const args = [];
 
         let query = `
-            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, COUNT(l.*) AS "likes"
+            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
             FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
-                                 LEFT OUTER JOIN kwicker.likes l on p.id_post = l.id_post
             WHERE p.is_removed = FALSE AND u.is_active = TRUE `;
 
         if (idUser != "null") {
@@ -102,12 +101,10 @@ class Posts {
             args.push(idUser);
         }
 
-        query += ` GROUP BY u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation `;
-
         if (idUser != "null") {
             query += `ORDER BY p.date_creation DESC`
         } else {
-            query += `ORDER BY likes DESC`
+            query += `ORDER BY p.number_of_likes DESC`
         }
 
         try {
@@ -123,13 +120,11 @@ class Posts {
     async getHomePosts(idUser) {
 
         let query = `
-            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, COUNT(l.*) AS "likes"
+            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
             FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
-                                 LEFT OUTER JOIN kwicker.likes l on p.id_post = l.id_post
                                  LEFT OUTER JOIN kwicker.follows f on u.id_user = f.id_user_followed
             WHERE p.is_removed = FALSE AND u.is_active = TRUE
-              AND f.id_user_follower = $1
-            GROUP BY u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation`;
+              AND f.id_user_follower = $1`;
 
         try {
             const { rows } = await db.query(query, [idUser]);
