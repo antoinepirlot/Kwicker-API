@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const db = require("../db/db");
 const LIFETIME_JWT = 24 * 60 * 60 * 1000;
 const saltRounds = 10;
-const jwtSecret = require("../config/jwt_secret");
 
 class Users {
   constructor() {
@@ -172,7 +171,7 @@ class Users {
 
     const token = jwt.sign(
         { idUser: authenticatedUser.id_user },
-        jwtSecret,
+        process.env.jwtSecret,
         { expiresIn: LIFETIME_JWT }
     );
 
@@ -183,21 +182,7 @@ class Users {
   async register(body) {
     const isInserted = await this.addUser(body);
     if (!isInserted) return;
-    const idUser = await this.getIdByEmail(body.email);
-    const authenticatedUser = {
-      id_user: idUser,
-      is_admin: false,
-      token: "None",
-    };
-
-    const token = jwt.sign(
-        { idUser: authenticatedUser.idUser },
-        jwtSecret,
-        { expiresIn: LIFETIME_JWT }
-    );
-
-    authenticatedUser.token = token;
-    return authenticatedUser;
+    return await this.login(body);
   }
 
 
