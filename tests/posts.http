@@ -3,8 +3,8 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-  "username": "username",
-  "password": "psw"
+  "username": "lepirelot",
+  "password": "06192000"
 }
 
 > {%
@@ -21,6 +21,9 @@ Authorization: {{usertoken}}
 
 ### GET all posts ordered by number of likes
 GET {{host}}/posts/orderbylike
+
+### GET all liked posts
+GET {{host}}/posts/postsLiked/1
 
 ### POST add a new post
 POST {{host}}/posts

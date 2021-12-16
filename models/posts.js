@@ -2,6 +2,18 @@ const db = require("../db/db");
 const escape = require("escape-html");
 
 class Posts {
+
+    /*
+    *
+    * ░██████╗░███████╗████████╗
+    * ██╔════╝░██╔════╝╚══██╔══╝
+    * ██║░░██╗░█████╗░░░░░██║░░░
+    * ██║░░╚██╗██╔══╝░░░░░██║░░░
+    * ╚██████╔╝███████╗░░░██║░░░
+    * ░╚═════╝░╚══════╝░░░╚═╝░░░
+    *
+    **/
+
     /**
      * Request to the db to SELECT all posts
      * @returns {Array} rows -> list of all posts
@@ -129,6 +141,47 @@ class Posts {
     }
 
     /**
+     * Select all posts liked by a user identified by its id
+     * @param id_user
+     * @returns {Promise<*>}
+     */
+    async getLikedPosts(id_user) {
+        const query = {
+            text: `SELECT id_post,
+                          id_user,
+                          image,
+                          message,
+                          parent_post,
+                          is_removed,
+                          date_creation,
+                          number_of_likes
+                   FROM kwicker.posts
+                   WHERE id_post IN (SELECT id_post
+                                     FROM kwicker.likes
+                                     WHERE id_user = $1)`,
+            values: [id_user]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting posts liked by the user from the dataase.");
+        }
+    }
+
+    /*
+    *
+    *  ██████╗░░█████╗░░██████╗████████╗
+    *  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+    *  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+    *  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+    *  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+    *  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+    *
+    **/
+
+    /**
      * Add a new post to the db
      * @param body
      * @returns {Promise<void>}
@@ -147,6 +200,17 @@ class Posts {
             throw new Error("Error while creating post to database.");
         }
     }
+
+    /*
+    *
+    *  ██╗░░░██╗██████╗░██████╗░░█████╗░████████╗███████╗
+    *  ██║░░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+    *  ██║░░░██║██████╔╝██║░░██║███████║░░░██║░░░█████╗░░
+    *  ██║░░░██║██╔═══╝░██║░░██║██╔══██║░░░██║░░░██╔══╝░░
+    *  ╚██████╔╝██║░░░░░██████╔╝██║░░██║░░░██║░░░███████╗
+    *  ░╚═════╝░╚═╝░░░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+    *
+    **/
 
     /**
      * Update the post identified by its id and add it body's attributes, image and message are required
@@ -183,6 +247,17 @@ class Posts {
             throw new Error("Error while activating a post from the database.");
         }
     }
+
+    /*
+    *
+    *  ██████╗░███████╗██╗░░░░░███████╗████████╗███████╗
+    *  ██╔══██╗██╔════╝██║░░░░░██╔════╝╚══██╔══╝██╔════╝
+    *  ██║░░██║█████╗░░██║░░░░░█████╗░░░░░██║░░░█████╗░░
+    *  ██║░░██║██╔══╝░░██║░░░░░██╔══╝░░░░░██║░░░██╔══╝░░
+    *  ██████╔╝███████╗███████╗███████╗░░░██║░░░███████╗
+    *  ╚═════╝░╚══════╝╚══════╝╚══════╝░░░╚═╝░░░╚══════╝
+    *
+    **/
 
     /**
      * Remove a post from the db
