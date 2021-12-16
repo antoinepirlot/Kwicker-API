@@ -1,2 +1,2 @@
 ### GET all messages
-GET {{host}}/messages/1/2
+GET {{host}}/messages/1/3
