@@ -1,4 +1,3 @@
-const db = require("../config/db_config");
 const {Pool} = require("pg");
 
 dbConfig = {
