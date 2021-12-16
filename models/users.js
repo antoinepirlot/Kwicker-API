@@ -182,21 +182,7 @@ class Users {
   async register(body) {
     const isInserted = await this.addUser(body);
     if (!isInserted) return;
-    const idUser = await this.getIdByEmail(body.email);
-    const authenticatedUser = {
-      id_user: idUser,
-      is_admin: false,
-      token: "None",
-    };
-
-    const token = jwt.sign(
-        { idUser: authenticatedUser.idUser },
-        process.env.jwtSecret,
-        { expiresIn: LIFETIME_JWT }
-    );
-
-    authenticatedUser.token = token;
-    return authenticatedUser;
+    return await this.login(body);
   }
 
 
