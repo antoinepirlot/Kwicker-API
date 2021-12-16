@@ -42,9 +42,9 @@ router.get("/orderbylike", authorizeUser, async (req, res) => {
     }
 });
 
-router.get("/allPostWithLikesAndUser/:isSorted/:profilePosts", authorizeUser, async (req, res) => {
+router.get("/allPostWithLikesAndUser/:profilePosts", authorizeUser, async (req, res) => {
     try{
-        const posts = await postsModel.getPostsWithLikesAndUser(req.params.isSorted, req.params.profilePosts);
+        const posts = await postsModel.getPostsWithLikesAndUser(req.params.profilePosts);
         return res.json(posts);
     } catch (e){
         return res.sendStatus(502);
@@ -61,6 +61,15 @@ router.post("/", authorizeUser, async (req, res) => {
     try {
         await postsModel.createPost(req.body);
         return res.sendStatus(201);
+    } catch (e) {
+        return res.sendStatus(502);
+    }
+});
+
+router.post("/homepage", authorizeUser, async (req, res) => {
+    try {
+        const posts = await postsModel.getHomePosts(req.body.id_user);
+        return res.json(posts);
     } catch (e) {
         return res.sendStatus(502);
     }

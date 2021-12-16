@@ -73,11 +73,10 @@ class Posts {
     }
 
     /**
-     * @param isSorted true => ordered by like descending, false => ordered by date descending
-     * @param idUser display only from one user o
-     * @returns a list of posts associate with user and likes
+     * @param idUser display only from one user o (so ordered by date)
+     * @returns a list of posts associate with user and likes ordered by likes
      */
-    async getPostsWithLikesAndUser(isSorted, idUser) {
+    async getPostsWithLikesAndUser(idUser) {
         const args = [];
 
         let query = `
@@ -93,11 +92,35 @@ class Posts {
 
         query += ` GROUP BY u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation `;
 
-        if (isSorted === "true") query += `ORDER BY likes DESC`;
-        else query += `ORDER BY p.date_creation DESC`;
+        if (idUser != "null") {
+            query += `ORDER BY p.date_creation DESC`
+        } else {
+            query += `ORDER BY likes DESC`
+        }
 
         try {
             const { rows } = await db.query(query, args);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            return false;
+        }
+    }
+
+
+    async getHomePosts(idUser) {
+
+        let query = `
+            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, COUNT(l.*) AS "likes"
+            FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
+                                 LEFT OUTER JOIN kwicker.likes l on p.id_post = l.id_post
+                                 LEFT OUTER JOIN kwicker.follows f on u.id_user = f.id_user_followed
+            WHERE p.is_removed = FALSE AND u.is_active = TRUE
+              AND f.id_user_follower = $1
+            GROUP BY u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation`;
+
+        try {
+            const { rows } = await db.query(query, [idUser]);
             return rows;
         } catch (e) {
             console.log(e.stack);
