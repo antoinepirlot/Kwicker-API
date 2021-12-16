@@ -147,16 +147,19 @@ class Posts {
      */
     async getLikedPosts(id_user) {
         const query = {
-            text: `SELECT id_post,
-                          id_user,
-                          image,
-                          message,
-                          parent_post,
-                          is_removed,
-                          date_creation,
-                          number_of_likes
-                   FROM kwicker.posts
-                   WHERE id_post IN (SELECT id_post
+            text: `SELECT p.id_post,
+                          u.id_user,
+                          u.username,
+                          p.image,
+                          p.message,
+                          p.parent_post,
+                          p.is_removed,
+                          p.date_creation,
+                          p.number_of_likes
+                   FROM kwicker.posts p,
+                        kwicker.users u
+                   WHERE p.id_user = u.id_user
+                     AND p.id_post IN (SELECT id_post
                                      FROM kwicker.likes
                                      WHERE id_user = $1)`,
             values: [id_user]
