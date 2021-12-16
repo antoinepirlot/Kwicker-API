@@ -164,10 +164,10 @@ router.put("/activate/:id_post", authorizeAdmin, async function (req, res) {
 /**
  * DELETE a post identified by its id
  */
-router.delete("/", authorizeUser, async (req, res) => {
-    console.log("DELETE");
+router.delete("/:id_post", authorizeUser, async (req, res) => {
+    console.log("DELETE /");
     try {
-        const rowCount = await postsModel.removePost(req.body.id_post);
+        const rowCount = await postsModel.removePost(req.params.id_post);
         if (rowCount === 0)
             return res.sendStatus(404);
         return res.sendStatus(200);
