@@ -55,6 +55,7 @@ router.post("/", authorizeUser, async (req, res) => {
 
 
 router.post("/toggle", authorizeUser, async (req, res) => {
+    console.log(req.body)
     if (!req.body)
         return res.sendStatus(400);
     try {
