@@ -72,6 +72,11 @@ class Posts {
         }
     }
 
+    /**
+     * @param isSorted true => ordered by like descending, false => ordered by date descending
+     * @param idUser display only from one user o
+     * @returns a list of posts associate with user and likes
+     */
     async getPostsWithLikesAndUser(isSorted, idUser) {
         const args = [];
 

@@ -53,6 +53,20 @@ router.post("/", authorizeUser, async (req, res) => {
     }
 });
 
+
+router.post("/toggle", async (req, res) => {
+    if (!req.body)
+        return res.sendStatus(400);
+    try {
+        if(await likesModel.toggleLike(req.body))
+            return res.sendStatus(201);
+        else
+            return res.sendStatus(200);
+    } catch (e) {
+        return res.sendStatus(502);
+    }
+});
+
 router.delete("/", authorizeUser, async (req, res) => {
     console.log("PUT/");
     if (!req.body)

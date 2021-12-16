@@ -24,3 +24,12 @@ Content-Type: application/json
   "id_user": 1,
   "id_post": 7
 }
+
+### POST a new like
+POST {{host}}/likes/toggle
+Content-Type: application/json
+
+{
+  "id_user": 1,
+  "id_post": 4
+}

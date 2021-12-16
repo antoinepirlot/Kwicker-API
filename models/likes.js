@@ -74,6 +74,38 @@ class Likes {
             throw new Error("Error while add a new like in the db.");
         }
     }
+    async existLike(body) {
+        const query = {
+            text: "SELECT id_user, id_post FROM kwicker.likes WHERE id_user = $1 AND id_post = $2",
+            values: [body.id_user, body.id_post]
+        };
+        try {
+            const rows = await db.query(query);
+            return rows.rowCount
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while add a new like in the db.");
+        }
+    }
+
+    async toggleLike(body) {
+        let query = "INSERT INTO kwicker.likes VALUES ($1, $2)";
+        let returnValue = true;
+
+        if (await this.existLike(body)) {
+            query = "DELETE FROM kwicker.likes WHERE id_user = $1 AND id_post = $2";
+            returnValue = false;
+        }
+
+        try {
+            await db.query(query, [body.id_user, body.id_post]);
+            return returnValue;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while add a new like in the db.");
+        }
+
+    }
 
     async removeLike(body) {
         const query = {
