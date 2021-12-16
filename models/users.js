@@ -35,7 +35,8 @@ class Users {
 
   async getAllUsers() {
     const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
-                    FROM kwicker.users`;
+                    FROM kwicker.users
+                    ORDER BY id_user`;
     try {
       const { rows } = await db.query(query);
       return rows;
