@@ -15,7 +15,10 @@ class Messages {
 
     async getMessages(id_sender, id_recipient) {
         const query = {
-            text: `SELECT
+            text: `SELECT id_message,
+                          id_sender,
+                          id_recipient,
+                          message
                    FROM kwicker.messages
                    WHERE id_sender = $1
                      AND id_recipient = $2`,
