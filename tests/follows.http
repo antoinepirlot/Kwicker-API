@@ -13,3 +13,13 @@ Authorization: {{userToken}}
 ### removeFollow()
 DELETE {{host}}/follows/88
 Authorization: {{userToken}}
+
+### toggleFollow()
+POST {{host}}/follows/toggle
+Authorization: {{userToken}}
+Content-Type: Application/json
+
+{
+  "id_user_followed": "1",
+  "id_user_follower": "1"
+}
