@@ -1,9 +1,5 @@
 
 const jwt = require("jsonwebtoken");
-<<<<<<< HEAD
-=======
-
->>>>>>> 0604a4244006dff6d85072d730acc06344d60b2d
 const { Users } = require("../models/users");
 const userModel = new Users();
 
