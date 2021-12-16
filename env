@@ -1,6 +1,0 @@
-DB_DATABASE=d27lf9srlla7h5
-DB_HOST=ec2-52-31-201-170.eu-west-1.compute.amazonaws.com
-DB_PASSWORD=77588ebfaaff2a9ce2949bfe98e942bef3638a60001c977517a4daff241ec6ff
-DB_PORT=5432
-DB_USER=vivxlfahvzdxsd
-jwtSecret=o8yMv^HVfp6a&58db##eht^C*2&HK!SPJT*ZNK5J#F^eGXM#N!46pq*UR%dtQqC45QR52bG^m23!P#dnd%pnMsu8n59jB@H^jA!L$7LCrm^8o4yFuQHPa@$66$L^473^
