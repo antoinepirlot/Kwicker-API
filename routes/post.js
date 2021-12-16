@@ -1,5 +1,4 @@
 const express = require("express");
-const db = require("../db/db");
 const {Posts} = require("../models/posts");
 const {authorizeUser, authorizeAdmin} = require("../utils/authorize");
 
