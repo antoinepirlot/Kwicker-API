@@ -38,16 +38,4 @@ router.post("/toggle", authorizeUser, async function (req, res, next) {
     }
 });
 
-router.post("/:idUser", authorizeUser, async function (req, res, next) {
-    const follow = await followsModel.addFollow(req.params.idUser, req.user.id_user);
-    if (!follow) return res.status(409).end();
-    return res.json(follow);
-});
-
-router.delete("/:idUser", authorizeUser, async function (req, res, next) {
-    const follow = await followsModel.deleteFollow(req.params.idUser, req.user.id_user);
-    if (!follow) return res.status(409).end();
-    return res.json(follow);
-});
-
 module.exports = router;
