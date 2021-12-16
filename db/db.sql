@@ -63,6 +63,7 @@ CREATE TABLE kwicker.messages
     id_sender    INTEGER CHECK ( id_sender <> messages.id_recipient ),
     id_recipient INTEGER CHECK ( id_recipient <> messages.id_sender ),
     message      VARCHAR(300) NOT NULL CHECK ( message <> '' ),
+    date_creation   DATE         NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_sender) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (id_recipient) REFERENCES kwicker.users (id_user)
 );
