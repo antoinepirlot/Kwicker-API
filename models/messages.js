@@ -35,12 +35,9 @@ class Messages {
 
         try {
             const {rows} = await db.query(query);
-            for(let i = 0; i < rows.length; i++) {
-                //Cannot be done on an one line
-                const decryptedMessage = rows[i];
-                rows[i] = decryptedMessage;
-            }
-            console.log(rows);
+            rows.forEach((row) => {
+                row["message"] = decrypt(row["message"]);
+            });
             return rows;
         } catch (e) {
             console.log(e.stack);
@@ -61,7 +58,6 @@ class Messages {
                    VALUES ($1, $2, $3)`,
             values: [escape(id_sender), escape(id_recipient), encrypt(escape(message))]
         };
-
         try {
             const result = await db.query(query);
             return result.rowCount;
