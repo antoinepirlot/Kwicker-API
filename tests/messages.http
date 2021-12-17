@@ -1,2 +1,12 @@
 ### GET all messages
 GET {{host}}/messages/1/3
+
+### POST send a message
+POST {{host}}/messages/
+Content-Type: application/json
+
+{
+  "id_sender": 1,
+  "id_recipient": 8,
+  "message": "Hello :p"
+}

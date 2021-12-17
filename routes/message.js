@@ -28,4 +28,27 @@ router.get("/:id_sender/:id_recipient", authorizeUser, async (req, res) => {
     }
 });
 
+/*
+*
+*  ██████╗░░█████╗░░██████╗████████╗
+*  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+*  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+*  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+*  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+*  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+*
+**/
+
+router.post("/", authorizeUser, async (req, res) => {
+    console.log("POST/ message");
+    const body = req.body;
+    try {
+        const rowCount = await messagesModel.sendMessage(body.id_sender, body.id_recipient, body.message);
+        if(rowCount === 0)
+            return res.sendStatus(502).end();
+        return res.sendStatus(200).end();
+    } catch (e) {
+        return res.sendStatus(502).end();
+    }
+});
 module.exports = router;
