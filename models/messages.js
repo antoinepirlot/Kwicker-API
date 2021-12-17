@@ -39,6 +39,29 @@ class Messages {
             throw new Error("Error while getting all messages from a conversation from the database.");
         }
     }
+
+    /**
+     * Insert a message between 2 users into the database
+     * @param id_sender
+     * @param id_recipient
+     * @param message
+     * @returns {Promise<null|number|*>}
+     */
+    async sendMessage(id_sender, id_recipient, message) {
+        const query = {
+            text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
+                   VALUES ($1, $2, $3)`,
+            values: [id_sender, id_recipient, message]
+        };
+
+        try {
+            const result = await db.query(query);
+            return result.rowCount;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while insert a message into the database.");
+        }
+    }
 }
 
 module.exports = {Messages};
