@@ -1,4 +1,5 @@
 const db = require("../db/db");
+const {decrypt} = require("../utils/crypt");
 
 class Messages {
 
@@ -33,6 +34,12 @@ class Messages {
 
         try {
             const {rows} = await db.query(query);
+            for(let i = 0; i < rows.length; i++) {
+                //Cannot be done on an one line
+                const decryptedMessage = rows[i];
+                rows[i] = decryptedMessage;
+            }
+            console.log(rows);
             return rows;
         } catch (e) {
             console.log(e.stack);
