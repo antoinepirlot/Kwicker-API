@@ -8,6 +8,4 @@ function decrypt(encryptedMessage) {
     return cryptoJs.enc.Base64.parse(encryptedMessage).toString(cryptoJs.enc.Utf8);
 }
 
-console.log(decrypt(encrypt("Bonjour les amis, je ne sais que faire")));
-
 module.exports = {encrypt, decrypt};
