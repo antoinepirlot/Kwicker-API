@@ -29,7 +29,7 @@ class Messages {
                    FROM kwicker.messages
                    WHERE id_sender = $1
                      AND id_recipient = $2`,
-            values: [id_sender, id_recipient]
+            values: [escape(id_sender), escape(id_recipient)]
         };
 
         try {
@@ -58,7 +58,7 @@ class Messages {
         const query = {
             text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
                    VALUES ($1, $2, $3)`,
-            values: [id_sender, id_recipient, encrypt(escape(message))]
+            values: [escape(id_sender), escape(id_recipient), encrypt(escape(message))]
         };
 
         try {
