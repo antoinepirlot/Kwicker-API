@@ -1,10 +1,20 @@
 const express = require("express");
-const db = require("../db/db");
 const {Posts} = require("../models/posts");
 const {authorizeUser, authorizeAdmin} = require("../utils/authorize");
 
 const router = express.Router();
 const postsModel = new Posts();
+
+/*
+*
+* ░██████╗░███████╗████████╗
+* ██╔════╝░██╔════╝╚══██╔══╝
+* ██║░░██╗░█████╗░░░░░██║░░░
+* ██║░░╚██╗██╔══╝░░░░░██║░░░
+* ╚██████╔╝███████╗░░░██║░░░
+* ░╚═════╝░╚══════╝░░░╚═╝░░░
+*
+**/
 
 /**
  * GET all posts
@@ -42,14 +52,36 @@ router.get("/orderbylike", authorizeUser, async (req, res) => {
     }
 });
 
-router.get("/allPostWithLikesAndUser/:isSorted/:profilePosts", authorizeUser, async (req, res) => {
+router.get("/allPostWithLikesAndUser/:profilePosts", authorizeUser, async (req, res) => {
     try{
-        const posts = await postsModel.getPostsWithLikesAndUser(req.params.isSorted, req.params.profilePosts);
+        const posts = await postsModel.getPostsWithLikesAndUser(req.params.profilePosts);
         return res.json(posts);
     } catch (e){
         return res.sendStatus(502);
     }
 });
+
+// GET get all posts liked by a user
+router.get("/postsLiked/:id_user", authorizeUser, async (req, res) => {
+    console.log("GET/ postsLiked");
+    try {
+        const posts = await postsModel.getLikedPosts(req.params.id_user);
+        return res.json(posts);
+    } catch (e) {
+        return res.sendStatus(502).end();
+    }
+});
+
+/*
+*
+*  ██████╗░░█████╗░░██████╗████████╗
+*  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+*  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+*  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+*  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+*  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+*
+**/
 
 /**
  * POST add a new post to the db
@@ -65,6 +97,26 @@ router.post("/", authorizeUser, async (req, res) => {
         return res.sendStatus(502);
     }
 });
+
+router.post("/homepage", authorizeUser, async (req, res) => {
+    try {
+        const posts = await postsModel.getHomePosts(req.body.id_user);
+        return res.json(posts);
+    } catch (e) {
+        return res.sendStatus(502);
+    }
+});
+
+/*
+*
+*  ██╗░░░██╗██████╗░██████╗░░█████╗░████████╗███████╗
+*  ██║░░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+*  ██║░░░██║██████╔╝██║░░██║███████║░░░██║░░░█████╗░░
+*  ██║░░░██║██╔═══╝░██║░░██║██╔══██║░░░██║░░░██╔══╝░░
+*  ╚██████╔╝██║░░░░░██████╔╝██║░░██║░░░██║░░░███████╗
+*  ░╚═════╝░╚═╝░░░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+*
+**/
 
 /**
  * PUT update a post identified by its id
@@ -98,11 +150,22 @@ router.put("/activate/:id_post", authorizeAdmin, async function (req, res) {
     }
 });
 
+/*
+*
+*  ██████╗░███████╗██╗░░░░░███████╗████████╗███████╗
+*  ██╔══██╗██╔════╝██║░░░░░██╔════╝╚══██╔══╝██╔════╝
+*  ██║░░██║█████╗░░██║░░░░░█████╗░░░░░██║░░░█████╗░░
+*  ██║░░██║██╔══╝░░██║░░░░░██╔══╝░░░░░██║░░░██╔══╝░░
+*  ██████╔╝███████╗███████╗███████╗░░░██║░░░███████╗
+*  ╚═════╝░╚══════╝╚══════╝╚══════╝░░░╚═╝░░░╚══════╝
+*
+**/
+
 /**
  * DELETE a post identified by its id
  */
 router.delete("/:id_post", authorizeUser, async (req, res) => {
-    console.log("DELETE");
+    console.log("DELETE /");
     try {
         const rowCount = await postsModel.removePost(req.params.id_post);
         if (rowCount === 0)

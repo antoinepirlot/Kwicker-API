@@ -46,6 +46,19 @@ class Users {
     }
   }
 
+  async getAllUsersSimilarTo(search) {
+    const query = `SELECT id_user, forename, lastname, email, username, image, is_active, is_admin, biography, date_creation 
+                    FROM kwicker.users
+                    WHERE (lower(forename) LIKE $1 OR lower(lastname) LIKE $1 OR lower(username) LIKE $1)
+                    AND is_active = TRUE`
+    try {
+      const { rows } = await db.query(query, [search + '%']);
+      return rows;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async getUserByEmail(email) {
     const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
                     FROM kwicker.users u WHERE u.email = $1`;

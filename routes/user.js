@@ -47,6 +47,10 @@ router.get('/profile/:id', authorizeUser, async function(req, res) {
   return res.json(await userModel.getProfileInformationsById(req.params.id));
 });
 
+router.get('/search/:search', authorizeUser, async function(req, res, next) {
+  return res.json(await userModel.getAllUsersSimilarTo(req.params.search));
+});
+
 
 /*
 *

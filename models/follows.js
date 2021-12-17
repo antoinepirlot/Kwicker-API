@@ -4,31 +4,39 @@ class Follows {
     constructor() {
     }
 
-    async addFollow(idFollowed, idFollower) {
-        if (idFollower == idFollowed) return;
+    async existFollow(body) {
         const query = {
-            name: 'insert-follow',
-            text: 'INSERT INTO kwicker.follows VALUES ($1, $2)',
-            values: [idFollowed, idFollower],
+            text: "SELECT id_user_followed, id_user_follower FROM kwicker.follows " +
+                    "WHERE id_user_followed = $1 AND id_user_follower = $2",
+            values: [body.id_user_followed, body.id_user_follower]
         };
         try {
-            return await db.query(query) != null;
+            const rows = await db.query(query);
+            return rows.rowCount
         } catch (e) {
-            return false;
+            console.log(e.stack);
+            throw new Error("Error while add a new like in the db.");
         }
     }
 
-    async deleteFollow(idFollowed, idFollower) {
-        const query = {
-            name: 'remove-follow',
-            text: 'DELETE FROM kwicker.follows WHERE id_user_followed = $1 AND id_user_follower = $2',
-            values: [idFollowed, idFollower],
-        };
+    async toggleFollow(body) {
+
+        if (body.id_user_followed == body.id_user_follower) return;
+
+        let query = "INSERT INTO kwicker.follows VALUES ($1, $2)";
+        let returnValue = true;
+
+        if (await this.existFollow(body)) {
+            query = "DELETE FROM kwicker.follows WHERE id_user_followed = $1 AND id_user_follower = $2";
+            returnValue = false;
+        }
+
         try {
-            const deleted = await db.query(query);
-            return deleted.rowCount === 1;
+            await db.query(query, [body.id_user_followed, body.id_user_follower]);
+            return returnValue;
         } catch (e) {
-            return false;
+            console.log(e.stack);
+            throw new Error("Error while add a new like in the db.");
         }
     }
 

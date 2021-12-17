@@ -10,12 +10,12 @@ CREATE TABLE kwicker.users
     lastname      VARCHAR(50)  NOT NULL CHECK (lastname <> ''),
     email         VARCHAR(100) NOT NULL CHECK (email <> '') UNIQUE,
     username      VARCHAR(100) NOT NULL CHECK (username <> '') UNIQUE,
-    image         BYTEA        NULL     CHECK (image <> ''),
-    password      VARCHAR(60) NOT NULL CHECK (password <> ''),
+    image         BYTEA        NULL CHECK (image <> ''),
+    password      VARCHAR(60)  NOT NULL CHECK (password <> ''),
     is_active     BOOLEAN      NOT NULL DEFAULT TRUE,
     is_admin      BOOLEAN      NOT NULL DEFAULT FALSE,
     biography     VARCHAR(500) NULL,
-    date_creation DATE         NOT NULL DEFAULT NOW()
+    date_creation TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE kwicker.posts
@@ -26,7 +26,7 @@ CREATE TABLE kwicker.posts
     message         VARCHAR(300) NOT NULL CHECK (message <> ''),
     parent_post     INTEGER,
     is_removed      BOOLEAN      NOT NULL DEFAULT FALSE,
-    date_creation   DATE         NOT NULL DEFAULT NOW(),
+    date_creation   TIMESTAMP    NOT NULL DEFAULT NOW(),
     number_of_likes INT          NOT NULL DEFAULT 0 CHECK (number_of_likes >= 0),
     FOREIGN KEY (id_user) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (parent_post) REFERENCES kwicker.posts (id_post)
@@ -59,10 +59,11 @@ CREATE TABLE kwicker.reports
 
 CREATE TABLE kwicker.messages
 (
-    id_message   SERIAL PRIMARY KEY,
-    id_sender    INTEGER CHECK ( id_sender <> messages.id_recipient ),
-    id_recipient INTEGER CHECK ( id_recipient <> messages.id_sender ),
-    message      VARCHAR(300) NOT NULL CHECK ( message <> '' ),
+    id_message    SERIAL PRIMARY KEY,
+    id_sender     INTEGER CHECK ( id_sender <> messages.id_recipient ),
+    id_recipient  INTEGER CHECK ( id_recipient <> messages.id_sender ),
+    message       VARCHAR(300) NOT NULL CHECK ( message <> '' ),
+    date_creation TIMESTAMP    NOT NULL DEFAULT NOW(),
     FOREIGN KEY (id_sender) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (id_recipient) REFERENCES kwicker.users (id_user)
 );
@@ -83,14 +84,32 @@ CREATE TRIGGER trigger_add_like
     FOR EACH ROW
 EXECUTE PROCEDURE kwicker.add_like();
 
+CREATE OR REPLACE FUNCTION kwicker.delete_like() RETURNS TRIGGER AS
+$$
+BEGIN
+    UPDATE kwicker.posts
+    SET number_of_likes = number_of_likes - 1
+    WHERE id_post = OLD.id_post;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_delete_like
+    AFTER DELETE
+    ON kwicker.likes
+    FOR EACH ROW
+EXECUTE PROCEDURE kwicker.delete_like();
+
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
 VALUES ('Antoine', 'Pirlot', 'antoine.pirlot@vinci.be', 'lepirelot', 'mdp');
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
-VALUES ('Denis', 'Victor', 'victor.denis@vinci.be', 'vivi', '$2b$10$OSF1BQzAii/ERK/lDBceDekhEZWK4af/HYSeQ3nvIpJB8EaUTPLsS');
+VALUES ('Denis', 'Victor', 'victor.denis@vinci.be', 'vivi',
+        '$2b$10$OSF1BQzAii/ERK/lDBceDekhEZWK4af/HYSeQ3nvIpJB8EaUTPLsS');
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
 VALUES ('Soulaymane', 'Gharroudi', 'soulaymane.gharroudi@vinci.be', 'souli', 'mdp');
 INSERT INTO kwicker.users (forename, lastname, email, username, password)
-VALUES ('François', 'Bardijn', 'francois.bardijn@vinci.be', 'françois', '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC');
+VALUES ('François', 'Bardijn', 'francois.bardijn@vinci.be', 'françois',
+        '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC');
 
 INSERT INTO kwicker.posts (id_user, message)
 VALUES (1, 'Hello World!');
@@ -127,14 +146,21 @@ INSERT INTO kwicker.messages (id_sender, id_recipient, message)
 VALUES (1, 4, 'Soulaymane m''a répondu');
 
 INSERT INTO kwicker.users (forename, lastname, email, username, password, biography, is_admin)
-VALUES ('François', 'Bardijn', 'guillaume.feron@student.vinci.be', 'gf', '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC', 'Famed singer-songwriter John Lennon founded the Beatles, a band that impacted the popular music scene like no other', true);
+VALUES ('François', 'Bardijn', 'guillaume.feron@student.vinci.be', 'gf',
+        '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC',
+        'Famed singer-songwriter John Lennon founded the Beatles, a band that impacted the popular music scene like no other',
+        true);
 
 
 INSERT INTO kwicker.users (forename, lastname, email, username, password, biography)
-VALUES ('Guillaume', 'Feron', 'francois.bardijn@student.vinci.be', 'fb', '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC', 'Known as the ''Queen of Tejano Music,'' Selena Quintanilla was a beloved Latin recording artist who was killed by the president of her fan club at the age of 23.');
+VALUES ('Guillaume', 'Feron', 'francois.bardijn@student.vinci.be', 'fb',
+        '$2b$10$o9QC86bWZINZ8bPzYHOBSOagWB5647r7ygm4Pg2xgvT6qE0qSYaCC',
+        'Known as the ''Queen of Tejano Music,'' Selena Quintanilla was a beloved Latin recording artist who was killed by the president of her fan club at the age of 23.');
 
 INSERT INTO kwicker.users (forename, lastname, email, username, password, is_active, biography)
-VALUES ('Alex', 'Ottoy', 'alex.ottoy@student.vinci.be', 'ao', '$2y$10$9dO3uO/2uSdMjpWMrCcCz.VzypZIYiKcxLSv8Xcm8HMXs5837wHpO', false, 'He was a scholar and minister who led the civil rights movement. After his assassination, he was memorialized by Martin Luther King Jr. Day.');
+VALUES ('Alex', 'Ottoy', 'alex.ottoy@student.vinci.be', 'ao',
+        '$2y$10$9dO3uO/2uSdMjpWMrCcCz.VzypZIYiKcxLSv8Xcm8HMXs5837wHpO', false,
+        'He was a scholar and minister who led the civil rights movement. After his assassination, he was memorialized by Martin Luther King Jr. Day.');
 
 
 

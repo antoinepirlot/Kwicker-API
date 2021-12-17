@@ -2,6 +2,18 @@ const db = require("../db/db");
 const escape = require("escape-html");
 
 class Posts {
+
+    /*
+    *
+    * ░██████╗░███████╗████████╗
+    * ██╔════╝░██╔════╝╚══██╔══╝
+    * ██║░░██╗░█████╗░░░░░██║░░░
+    * ██║░░╚██╗██╔══╝░░░░░██║░░░
+    * ╚██████╔╝███████╗░░░██║░░░
+    * ░╚═════╝░╚══════╝░░░╚═╝░░░
+    *
+    **/
+
     /**
      * Request to the db to SELECT all posts
      * @returns {Array} rows -> list of all posts
@@ -73,17 +85,15 @@ class Posts {
     }
 
     /**
-     * @param isSorted true => ordered by like descending, false => ordered by date descending
-     * @param idUser display only from one user o
-     * @returns a list of posts associate with user and likes
+     * @param idUser display only from one user o (so ordered by date)
+     * @returns a list of posts associate with user and likes ordered by likes
      */
-    async getPostsWithLikesAndUser(isSorted, idUser) {
+    async getPostsWithLikesAndUser(idUser) {
         const args = [];
 
         let query = `
-            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, COUNT(l.*) AS "likes"
+            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
             FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
-                                 LEFT OUTER JOIN kwicker.likes l on p.id_post = l.id_post
             WHERE p.is_removed = FALSE AND u.is_active = TRUE `;
 
         if (idUser != "null") {
@@ -91,10 +101,11 @@ class Posts {
             args.push(idUser);
         }
 
-        query += ` GROUP BY u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation `;
-
-        if (isSorted === "true") query += `ORDER BY likes DESC`;
-        else query += `ORDER BY p.date_creation DESC`;
+        if (idUser != "null") {
+            query += `ORDER BY p.date_creation DESC`
+        } else {
+            query += `ORDER BY p.number_of_likes DESC`
+        }
 
         try {
             const { rows } = await db.query(query, args);
@@ -104,6 +115,69 @@ class Posts {
             return false;
         }
     }
+
+
+    async getHomePosts(idUser) {
+
+        let query = `
+            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
+            FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
+                                 LEFT OUTER JOIN kwicker.follows f on u.id_user = f.id_user_followed
+            WHERE p.is_removed = FALSE AND u.is_active = TRUE
+              AND f.id_user_follower = $1`;
+
+        try {
+            const { rows } = await db.query(query, [idUser]);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            return false;
+        }
+    }
+
+    /**
+     * Select all posts liked by a user identified by its id
+     * @param id_user
+     * @returns {Promise<*>}
+     */
+    async getLikedPosts(id_user) {
+        const query = {
+            text: `SELECT p.id_post,
+                          u.id_user,
+                          u.username,
+                          p.image,
+                          p.message,
+                          p.parent_post,
+                          p.is_removed,
+                          p.date_creation,
+                          p.number_of_likes
+                   FROM kwicker.posts p,
+                        kwicker.users u
+                   WHERE p.id_user = u.id_user
+                     AND p.id_post IN (SELECT id_post
+                                     FROM kwicker.likes
+                                     WHERE id_user = $1)`,
+            values: [id_user]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting posts liked by the user from the dataase.");
+        }
+    }
+
+    /*
+    *
+    *  ██████╗░░█████╗░░██████╗████████╗
+    *  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+    *  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+    *  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+    *  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+    *  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+    *
+    **/
 
     /**
      * Add a new post to the db
@@ -124,6 +198,17 @@ class Posts {
             throw new Error("Error while creating post to database.");
         }
     }
+
+    /*
+    *
+    *  ██╗░░░██╗██████╗░██████╗░░█████╗░████████╗███████╗
+    *  ██║░░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+    *  ██║░░░██║██████╔╝██║░░██║███████║░░░██║░░░█████╗░░
+    *  ██║░░░██║██╔═══╝░██║░░██║██╔══██║░░░██║░░░██╔══╝░░
+    *  ╚██████╔╝██║░░░░░██████╔╝██║░░██║░░░██║░░░███████╗
+    *  ░╚═════╝░╚═╝░░░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+    *
+    **/
 
     /**
      * Update the post identified by its id and add it body's attributes, image and message are required
@@ -160,6 +245,17 @@ class Posts {
             throw new Error("Error while activating a post from the database.");
         }
     }
+
+    /*
+    *
+    *  ██████╗░███████╗██╗░░░░░███████╗████████╗███████╗
+    *  ██╔══██╗██╔════╝██║░░░░░██╔════╝╚══██╔══╝██╔════╝
+    *  ██║░░██║█████╗░░██║░░░░░█████╗░░░░░██║░░░█████╗░░
+    *  ██║░░██║██╔══╝░░██║░░░░░██╔══╝░░░░░██║░░░██╔══╝░░
+    *  ██████╔╝███████╗███████╗███████╗░░░██║░░░███████╗
+    *  ╚═════╝░╚══════╝╚══════╝╚══════╝░░░╚═╝░░░╚══════╝
+    *
+    **/
 
     /**
      * Remove a post from the db
