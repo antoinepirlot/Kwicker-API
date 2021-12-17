@@ -59,12 +59,13 @@ CREATE TABLE kwicker.reports
 
 CREATE TABLE kwicker.messages
 (
-    id_message    SERIAL PRIMARY KEY,
-    id_sender     INTEGER CHECK ( id_sender <> messages.id_recipient ),
-    id_recipient  INTEGER CHECK ( id_recipient <> messages.id_sender ),
-    message       VARCHAR(300) NOT NULL CHECK ( message <> '' ),
-    date_creation TIMESTAMP    NOT NULL DEFAULT NOW(),
-    password      VARCHAR(60)  NOT NULL CHECK (password <> ''),
+    id_message         SERIAL PRIMARY KEY,
+    id_sender          INTEGER CHECK ( id_sender <> messages.id_recipient ),
+    id_recipient       INTEGER CHECK ( id_recipient <> messages.id_sender ),
+    message            VARCHAR(300) NOT NULL CHECK ( message <> '' ),
+    date_creation      TIMESTAMP    NOT NULL DEFAULT NOW(),
+    password_sender    VARCHAR(60)  NOT NULL CHECK (password_sender <> ''),
+    password_recipient VARCHAR(60)  NOT NULL CHECK (password_recipient <> ''),
     FOREIGN KEY (id_sender) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (id_recipient) REFERENCES kwicker.users (id_user)
 );
