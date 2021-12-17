@@ -4,11 +4,10 @@ const saltRound = 10;
 
 async function encrypt(message) {
     const password = await bcrypt.hash(generateP(), saltRound);
-    const encryptData = {
+    return {
         encryptedMessage: cryptoJs.AES.encrypt(message, password).toString(),
         password: password
     };
-    return encryptData;
 }
 
 function decrypt(encryptedMessage, password) {
