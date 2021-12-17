@@ -1,5 +1,5 @@
 const db = require("../db/db");
-const {decrypt} = require("../utils/crypt");
+const {decrypt, encrypt} = require("../utils/crypt");
 
 class Messages {
 
@@ -58,7 +58,7 @@ class Messages {
         const query = {
             text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
                    VALUES ($1, $2, $3)`,
-            values: [id_sender, id_recipient, message]
+            values: [id_sender, id_recipient, encrypt(escape(message))]
         };
 
         try {
