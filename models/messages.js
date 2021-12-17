@@ -27,8 +27,9 @@ class Messages {
                           id_recipient,
                           message
                    FROM kwicker.messages
-                   WHERE id_sender = $1
-                     AND id_recipient = $2`,
+                   WHERE (id_sender = $1 AND id_recipient = $2)
+                      OR (id_sender = $2 AND id_recipient = $1)
+                   ORDER BY id_message`,
             values: [escape(id_sender), escape(id_recipient)]
         };
 
