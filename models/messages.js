@@ -13,6 +13,12 @@ class Messages {
     *
     **/
 
+    /**
+     * Get all messages for a conversation
+     * @param id_sender
+     * @param id_recipient
+     * @returns {Promise<*>}
+     */
     async getMessages(id_sender, id_recipient) {
         const query = {
             text: `SELECT id_message,
