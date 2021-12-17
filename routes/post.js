@@ -167,7 +167,7 @@ router.put("/activate/:id_post", authorizeAdmin, async function (req, res) {
 router.delete("/:id_post", authorizeUser, async (req, res) => {
     console.log("DELETE /");
     try {
-        const rowCount = await postsModel.removePost(req.params.id_post);
+        const rowCount = await removePost(req.params.id_post);
         if (rowCount === 0)
             return res.sendStatus(404);
         return res.sendStatus(200);
@@ -175,5 +175,21 @@ router.delete("/:id_post", authorizeUser, async (req, res) => {
         res.sendStatus(502);
     }
 });
+
+router.delete("/admin/:id_post", authorizeAdmin, async (req, res) => {
+    console.log("DELETE /admin/");
+    try {
+        const rowCount = await removePost(req.params.id_post);
+        if(rowCount === 0)
+            return res.sendStatus(404).end();
+        return res.sendStatus(200);
+    } catch (e) {
+        res.sendStatus(502);
+    }
+});
+
+async function removePost(id_post) {
+    return await postsModel.removePost(id_post);
+}
 
 module.exports = router;

@@ -3,8 +3,8 @@ POST {{host}}/users/login
 Content-Type: application/json
 
 {
-  "username": "lepirelot",
-  "password": "06192000"
+  "username": "mdp",
+  "password": "mdp"
 }
 
 > {%
@@ -12,7 +12,7 @@ Content-Type: application/json
  %}
 
 ### GET all posts
-GET {{host}}/posts
+GET {{host}}/posts/
 Authorization: {{usertoken}}
 
 ### GET all posts from a user
