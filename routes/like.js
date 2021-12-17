@@ -15,6 +15,20 @@ router.get("/", authorizeUser, async (req, res) => {
     }
 });
 
+router.get("/exist/:idUser/:idPost", authorizeUser, async (req, res) => {
+    if (!req.params)
+        return res.sendStatus(400);
+    try {
+        const body = { id_user: req.params.idUser, id_post: req.params.idPost};
+        const rowCount = await likesModel.existLike(body);
+        if (rowCount === 0)
+            return res.sendStatus(200);
+        return res.sendStatus(201);
+    } catch (e) {
+        return res.sendStatus(502);
+    }
+});
+
 /**
  * GET all user's likes
  */
