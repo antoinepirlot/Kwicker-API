@@ -35,9 +35,7 @@ class Messages {
 
         try {
             const {rows} = await db.query(query);
-            rows.forEach((row) => {
-                row["message"] = decrypt(row["message"]);
-            });
+            decrypt(rows);
             return rows;
         } catch (e) {
             console.log(e.stack);
