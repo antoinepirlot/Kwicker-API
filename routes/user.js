@@ -130,7 +130,6 @@ router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
       !req.body.forename || !req.body.forename.trim()
   )
     return res.status(400).end();
-  if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
   const updatedUser = await userModel.updateUserForename(req.params.idUser, req.body.forename);
   if (!updatedUser) return res.status(403).end();
   return res.json(updatedUser);
@@ -142,7 +141,6 @@ router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
       !req.body.lastname || !req.body.lastname.trim()
   )
     return res.status(400).end();
-  if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
   const updatedUser = await userModel.updateUserLastname(req.params.idUser, req.body.lastname);
   if (!updatedUser) return res.status(403).end();
   return res.json(updatedUser);
@@ -151,7 +149,6 @@ router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
 // Update user biography
 router.put('/biography/:idUser', authorizeUser, async function(req, res, next) {
   if (!req.body) return res.status(400).end();
-  if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
   const updatedUser = await userModel.updateUserBiography(req.params.idUser, req.body.biography);
   if (!updatedUser) return res.status(403).end();
   return res.json(updatedUser);
