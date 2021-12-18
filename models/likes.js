@@ -77,7 +77,7 @@ class Likes {
     async existLike(body) {
         const query = {
             text: "SELECT id_user, id_post FROM kwicker.likes WHERE id_user = $1 AND id_post = $2",
-            values: [body.id_user, body.id_post]
+            values: [escape(body.id_user), escape(body.id_post)]
         };
         try {
             const rows = await db.query(query);
@@ -91,7 +91,7 @@ class Likes {
     async toggleLike(body) {
         let query = {
             text: "",
-            values: [body.id_user, body.id_post]
+            values: [escape(body.id_user), escape(body.id_post)]
         };
         let returnValue = true;
 
