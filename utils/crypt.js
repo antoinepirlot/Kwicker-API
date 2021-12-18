@@ -7,10 +7,8 @@ function encrypt(message) {
 
 function decrypt(rows) {
     rows.forEach((row) => {
-        const bytes = cryptoJs.enc.Base64.parse(row["message"]).toString(cryptoJs.enc.Utf8);
-        row["message"]
+        row["message"] = cryptoJs.enc.Base64.parse(row["message"]).toString(cryptoJs.enc.Utf8);
     });
-    return ;
 }
 
 module.exports = {encrypt, decrypt};
