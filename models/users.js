@@ -267,13 +267,11 @@ class Users {
       text: `UPDATE kwicker.users
              SET biography = $1
              WHERE id_user = $2`,
-      values: [escape(biographyUser), escape(id)]
+      values: [escape(biography), escape(id)]
     };
 
     try {
-      let biographyUser = biography;
-      if (!biographyUser.trim()) biographyUser = null;
-      return await db.query(query) != null;
+      return await db.query(query);
     } catch (e) {
       console.log(e.stack);
       return false;
