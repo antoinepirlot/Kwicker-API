@@ -235,12 +235,16 @@ class Users {
   async updateUserBiography(id, biography) {
     const query = `UPDATE kwicker.users SET biography = $1 WHERE id_user = $2`;
     try {
-      return await db.query(query, [biography, id]) != null;
+      console.log(biography.trim())
+      let biographyUser = biography;
+      if (!biographyUser.trim()) biographyUser = null;
+      return await db.query(query, [biographyUser, id]) != null;
     } catch (e) {
       console.log(e.stack);
       return false;
     }
   }
+
 
   async updateUserImage(id, image) {
     const query = `UPDATE kwicker.users SET image = $1 WHERE id_user = $2`;

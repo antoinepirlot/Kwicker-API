@@ -124,7 +124,8 @@ class Posts {
             FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
                                  LEFT OUTER JOIN kwicker.follows f on u.id_user = f.id_user_followed
             WHERE p.is_removed = FALSE AND u.is_active = TRUE
-              AND f.id_user_follower = $1`;
+              AND f.id_user_follower = $1
+            ORDER BY p.date_creation DESC`;
 
         try {
             const { rows } = await db.query(query, [idUser]);
