@@ -4,7 +4,6 @@ const { Users }  = require('../models/users');
 const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
 const userModel = new Users();
 
-
 /*
 *
 * ░██████╗░███████╗████████╗
@@ -16,37 +15,23 @@ const userModel = new Users();
 *
 **/
 
-// // getAllActiveUsers()
-// router.get('/image', async function(req, res, next) {
-//   const fs = require("fs");
-//   const bufferedFile = fs.readFileSync(__dirname + "/../image/Image_created_with_a_mobile_phone.png", { encoding: 'hex' });
-//   const fileData = `\\x${bufferedFile}`;
-//   console.log(fileData)
-//   return res.json(await userModel.updateUserImage(1, fileData));
-// });
-
-
-// getAllActiveUsers()
-router.get('/', authorizeUser, async function(req, res, next) {
-  return res.json(await userModel.getAllActiveUsers());
-});
-
-// getAllUsers()
+// Get all users
 router.get('/all', authorizeAdmin, async function(req, res, next) {
   return res.json(await userModel.getAllUsers());
 });
 
-// disconnect()
+// Clear user session
 router.get("/disconnect", authorizeUser, function (req, res, next) {
   req.session = null;
   return res.status(200).end();
 });
 
-// getProfileInformationsByEmail()
+// Get profile informations by ID
 router.get('/profile/:id', authorizeUser, async function(req, res) {
   return res.json(await userModel.getProfileInformationsById(req.params.id));
 });
 
+// Search user similar to /:search
 router.get('/search/:search', authorizeUser, async function(req, res, next) {
   return res.json(await userModel.getAllUsersSimilarTo(req.params.search));
 });
@@ -64,7 +49,7 @@ router.get('/search/:search', authorizeUser, async function(req, res, next) {
 **/
 
 
-// delete()
+// Delete an user by ID
 router.delete("/:idUser", authorizeUser, async function(req, res, next) {
   if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
   const deletedUser = userModel.deleteUser(req.params.idUser);
@@ -85,7 +70,7 @@ router.delete("/:idUser", authorizeUser, async function(req, res, next) {
 *
 **/
 
-// register()
+// Register
 router.post("/register", async function (req, res, next) {
   if (
     !req.body ||
@@ -106,7 +91,7 @@ router.post("/register", async function (req, res, next) {
   return res.json(authenticatedUser);
 });
 
-// login(username, password)
+// Login
 router.post("/login", async function (req, res, next) {
   if (
     !req.body ||
@@ -139,7 +124,7 @@ router.post("/login", async function (req, res, next) {
 *
 **/
 
-// updateUserForename()
+// Update user forename
 router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
   if (!req.body ||
       !req.body.forename || !req.body.forename.trim()
@@ -151,7 +136,7 @@ router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
   return res.json(updatedUser);
 });
 
-// updateUserLastname()
+// Update user lastname
 router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
   if (!req.body ||
       !req.body.lastname || !req.body.lastname.trim()
@@ -163,7 +148,7 @@ router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
   return res.json(updatedUser);
 });
 
-// updateUserBiography()
+// Update user biography
 router.put('/biography/:idUser', authorizeUser, async function(req, res, next) {
   if (!req.body) return res.status(400).end();
   if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
@@ -172,7 +157,7 @@ router.put('/biography/:idUser', authorizeUser, async function(req, res, next) {
   return res.json(updatedUser);
 });
 
-//Activate user
+// Update user activation
 router.put("/activate/:id_user", authorizeAdmin, async (req, res) => {
   console.log("Activate user");
   try {
@@ -198,7 +183,7 @@ router.put("/setadmin/:id_user", authorizeAdmin, async (req, res) => {
   }
 });
 
-// Set a member from admin to non admin
+// Set a member non admin
 router.put("/setnotadmin/:id_user", authorizeAdmin, async (req, res) => {
   console.log("PUT/ Set user to non admin");
   try {
