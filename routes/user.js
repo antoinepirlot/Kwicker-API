@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { Users }  = require('../models/users');
 const { authorizeAdmin, authorizeUser } = require('../utils/authorize');
+const {hash} = require("bcrypt");
 const userModel = new Users();
 
 /*
@@ -72,14 +73,12 @@ router.delete("/:idUser", authorizeUser, async function(req, res, next) {
 
 // Register
 router.post("/register", async function (req, res, next) {
-  if (
-    !req.body ||
-    !req.body.forename || !req.body.forename.trim() ||
-    !req.body.lastname || !req.body.lastname.trim() ||
-    !req.body.email || !req.body.email.trim() ||
-    !req.body.username || !req.body.username.trim() ||
-    !req.body.password || !req.body.password.trim()
-  )
+  if (!req.body ||
+      (req.body.hasOwnProperty("forename") && req.body.forename == "") ||
+      (req.body.hasOwnProperty("lastname") && req.body.lastname == "") ||
+      (req.body.hasOwnProperty("email") && req.body.email =="") ||
+      (req.body.hasOwnProperty("username") && req.body.username == "") ||
+      (req.body.hasOwnProperty("password") && req.body.password == ""))
     return res.status(400).end();
 
   const authenticatedUser = await userModel.register(req.body);
@@ -93,11 +92,9 @@ router.post("/register", async function (req, res, next) {
 
 // Login
 router.post("/login", async function (req, res, next) {
-  if (
-    !req.body ||
-    !req.body.username || !req.body.username.trim() ||
-    !req.body.password || !req.body.password.trim()
-  )
+  if (!req.body ||
+      (req.body.hasOwnProperty("username") && req.body.username == "") ||
+      (req.body.hasOwnProperty("password") && req.body.password == ""))
     return res.status(400).end();
 
   const authenticatedUser = await userModel.login(req.body);
@@ -127,8 +124,7 @@ router.post("/login", async function (req, res, next) {
 // Update user forename
 router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
   if (!req.body ||
-      !req.body.forename || !req.body.forename.trim()
-  )
+      (req.body.hasOwnProperty("forename") && req.body.forename == ""))
     return res.status(400).end();
   const updatedUser = await userModel.updateUserForename(req.params.idUser, req.body.forename);
   if (!updatedUser) return res.status(403).end();
@@ -138,8 +134,7 @@ router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
 // Update user lastname
 router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
   if (!req.body ||
-      !req.body.lastname || !req.body.lastname.trim()
-  )
+      (req.body.hasOwnProperty("lastname") && req.body.lastname == ""))
     return res.status(400).end();
   const updatedUser = await userModel.updateUserLastname(req.params.idUser, req.body.lastname);
   if (!updatedUser) return res.status(403).end();
