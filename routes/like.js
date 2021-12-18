@@ -57,7 +57,9 @@ router.get("/post/:id_post", authorizeUser, async (req, res) => {
  */
 router.post("/", authorizeUser, async (req, res) => {
     console.log("POST/");
-    if (!req.body)
+    if (!req.body ||
+        (req.body.hasOwnProperty("id_user") && req.body.id_user == "") ||
+        (req.body.hasOwnProperty("id_post") && req.body.id_post == ""))
         return res.sendStatus(400);
     try {
         await likesModel.addLike(req.body);
@@ -69,7 +71,9 @@ router.post("/", authorizeUser, async (req, res) => {
 
 
 router.post("/toggle", authorizeUser, async (req, res) => {
-    if (!req.body)
+    if (!req.body ||
+        (req.body.hasOwnProperty("id_user") && req.body.id_user == "") ||
+        (req.body.hasOwnProperty("id_post") && req.body.id_post == ""))
         return res.sendStatus(400);
     try {
         if(await likesModel.toggleLike(req.body))
@@ -83,7 +87,9 @@ router.post("/toggle", authorizeUser, async (req, res) => {
 
 router.delete("/", authorizeUser, async (req, res) => {
     console.log("PUT/");
-    if (!req.body)
+    if (!req.body ||
+        (req.body.hasOwnProperty("id_user") && req.body.id_user == "") ||
+        (req.body.hasOwnProperty("id_post") && req.body.id_post == ""))
         return res.sendStatus(400);
     try {
         const rowCount = await likesModel.removeLike(req.body);
