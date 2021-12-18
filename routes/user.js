@@ -138,6 +138,8 @@ router.post("/login", async function (req, res, next) {
 
 // updateUserForename()
 router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
+  console.log(req.body)
+
   if (!req.body ||
       !req.body.forename || !req.body.forename.trim()
   )
@@ -162,10 +164,7 @@ router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
 
 // updateUserBiography()
 router.put('/biography/:idUser', authorizeUser, async function(req, res, next) {
-  if (!req.body ||
-      !req.body.biography || !req.body.biography.trim()
-  )
-    return res.status(400).end();
+  if (!req.body) return res.status(400).end();
   if (!req.user.is_admin && req.params.idUser != req.session.idUser) return res.status(401).end();
   const updatedUser = await userModel.updateUserBiography(req.params.idUser, req.body.biography);
   if (!updatedUser) return res.status(403).end();
