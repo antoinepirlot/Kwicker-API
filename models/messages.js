@@ -25,7 +25,8 @@ class Messages {
             text: `SELECT id_message,
                           id_sender,
                           id_recipient,
-                          message
+                          message,
+                          date_creation
                    FROM kwicker.messages
                    WHERE (id_sender = $1 AND id_recipient = $2)
                       OR (id_sender = $2 AND id_recipient = $1)
