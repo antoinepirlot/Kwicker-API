@@ -8,7 +8,7 @@ class Follows {
         const query = {
             text: "SELECT id_user_followed, id_user_follower FROM kwicker.follows " +
                     "WHERE id_user_followed = $1 AND id_user_follower = $2",
-            values: [body.id_user_followed, body.id_user_follower]
+            values: [escape(body.id_user_followed), escape(body.id_user_follower)]
         };
         try {
             const rows = await db.query(query);
@@ -32,7 +32,7 @@ class Follows {
         }
 
         try {
-            await db.query(query, [body.id_user_followed, body.id_user_follower]);
+            await db.query(query, [escape(body.id_user_followed), escape(body.id_user_follower)]);
             return returnValue;
         } catch (e) {
             console.log(e.stack);
@@ -43,7 +43,7 @@ class Follows {
     async getFollowers(idUser) {
         const query = `SELECT id_user_follower FROM kwicker.follows WHERE id_user_followed = $1`;
         try {
-            const { rows } = await db.query(query, [idUser]);
+            const { rows } = await db.query(query, [escape(idUser)]);
             return rows;
         } catch (e) {
             console.log(e.stack);
@@ -54,7 +54,7 @@ class Follows {
     async getFolloweds(idUser) {
         const query = `SELECT id_user_followed FROM kwicker.follows WHERE id_user_follower = $1`;
         try {
-            const { rows } = await db.query(query, [idUser]);
+            const { rows } = await db.query(query, [escape(idUser)]);
             return rows;
         } catch (e) {
             console.log(e.stack);
