@@ -16,7 +16,7 @@ const messagesModel = new Messages();
 *
 **/
 
-router.get("/:id_sender/:id_recipient", authorizeUser, async (req, res) => {
+router.get("/getMessages/:id_sender/:id_recipient", authorizeUser, async (req, res) => {
     console.log("GET/ messages");
     try {
         const messages = await messagesModel.getMessages(req.params.id_sender, req.params.id_recipient);
@@ -29,7 +29,7 @@ router.get("/:id_sender/:id_recipient", authorizeUser, async (req, res) => {
 });
 
 router.get("/recipients/:id_sender", authorizeUser, async (req, res) => {
-    console.log("GET / recipients");
+    console.log("GET/ recipients");
     try {
         const messages = await messagesModel.getConversationUsers(req.params.id_sender);
         if(!messages)
