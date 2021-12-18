@@ -44,7 +44,8 @@ class Posts {
      * @returns {Promise<{image, parent_post, id_user, message}>}
      */
     async getUserPosts(id_user) {
-        const query = `SELECT id_post,
+        const query = {
+            text: `SELECT id_post,
                               id_user,
                               image,
                               message,
@@ -54,9 +55,11 @@ class Posts {
                               number_of_likes
                        FROM kwicker.posts
                        WHERE id_user = $1
-                       ORDER BY date_creation`;
+                       ORDER BY date_creation`,
+            values: [id_user]
+        };
         try {
-            const {rows} = await db.query(query, [id_user]);
+            const {rows} = await db.query(query);
             return rows;
         } catch (e) {
             console.log(e.stack);
@@ -89,26 +92,25 @@ class Posts {
      * @returns a list of posts associate with user and likes ordered by likes
      */
     async getPostsWithLikesAndUser(idUser) {
-        const args = [];
-
-        let query = `
-            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
-            FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
-            WHERE p.is_removed = FALSE AND u.is_active = TRUE `;
+        const query = {
+            text: ` SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
+                    FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
+                    WHERE p.is_removed = FALSE AND u.is_active = TRUE `
+        };
 
         if (idUser != "null") {
-            query += ` AND u.id_user = $1 `;
-            args.push(idUser);
+            query.text += ` AND u.id_user = $1 `;
+            query.values = [idUser];
         }
 
         if (idUser != "null") {
-            query += `ORDER BY p.date_creation DESC`
+            query.text += `ORDER BY p.date_creation DESC`
         } else {
-            query += `ORDER BY p.number_of_likes DESC`
+            query.text += `ORDER BY p.number_of_likes DESC`
         }
 
         try {
-            const { rows } = await db.query(query, args);
+            const { rows } = await db.query(query);
             return rows;
         } catch (e) {
             console.log(e.stack);
@@ -119,16 +121,18 @@ class Posts {
 
     async getHomePosts(idUser) {
 
-        let query = `
-            SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
-            FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
-                                 LEFT OUTER JOIN kwicker.follows f on u.id_user = f.id_user_followed
-            WHERE p.is_removed = FALSE AND u.is_active = TRUE
-              AND f.id_user_follower = $1
-            ORDER BY p.date_creation DESC`;
+        let query = {
+            text: `SELECT u.id_user, u.username, p.id_post, p.message, p.image, p.date_creation, p.number_of_likes
+                   FROM kwicker.users u LEFT OUTER JOIN kwicker.posts p ON u.id_user = p.id_user
+                                        LEFT OUTER JOIN kwicker.follows f ON u.id_user = f.id_user_followed
+                   WHERE p.is_removed = FALSE AND u.is_active = TRUE
+                     AND f.id_user_follower = $1
+                   ORDER BY p.date_creation DESC`,
+            values: [idUser]
+        };
 
         try {
-            const { rows } = await db.query(query, [idUser]);
+            const { rows } = await db.query(query);
             return rows;
         } catch (e) {
             console.log(e.stack);
@@ -187,14 +191,16 @@ class Posts {
      * @returns {Promise<void>}
      */
     async createPost(body) {
-        const query = `INSERT INTO kwicker.posts (id_user, image, message, parent_post)
-                       VALUES ($1, $2, $3, $4)`;
+        const query = {
+            text: `INSERT INTO kwicker.posts (id_user, image, message, parent_post)
+                   VALUES ($1, $2, $3, $4)`,
+            values: [escape(body.id_user),
+                     escape(body.image),
+                     escape(body.message),
+                     escape(body.parent_post)]
+        };
         try {
-            await db.query(query,
-                [body.id_user,
-                    body.image,
-                    escape(body.message),
-                    body.parent_post]);
+            await db.query(query);
         } catch (e) {
             console.log(e.stack);
             throw new Error("Error while creating post to database.");
@@ -219,12 +225,14 @@ class Posts {
      * @returns {Promise<null|number|*>}
      */
     async updatePost(id_post, body) {
-        const query = "UPDATE kwicker.posts SET image = $1, message = $2 WHERE id_post = $3";
+        const query = {
+            text: "UPDATE kwicker.posts SET image = $1, message = $2 WHERE id_post = $3",
+            values: [escape(body.image),
+                     escape(body.message),
+                     escape(id_post)]
+        } ;
         try {
-            const result = db.query(query,
-                [escape(body.image),
-                    escape(body.message),
-                    escape(id_post)]);
+            const result = db.query(query);
             return result.rowCount;
         } catch (e) {
             console.log(e.stack);
@@ -265,11 +273,14 @@ class Posts {
      * @returns {Promise<null|number|*>}
      */
     async removePost(id_post) {
-        const query = `UPDATE kwicker.posts
+        const query = {
+            text: `UPDATE kwicker.posts
                        SET is_removed = TRUE
-                       WHERE id_post = $1`;
+                       WHERE id_post = $1`,
+            values: [escape(id_post)]
+        };
         try {
-            const result = await db.query(query, [escape(id_post)]);
+            const result = await db.query(query);
             return result.rowCount;
         } catch (e) {
             console.log(e.stack);
