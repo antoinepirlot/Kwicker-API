@@ -53,6 +53,11 @@ router.get("/recipients/:id_sender", authorizeUser, async (req, res) => {
 
 router.post("/", authorizeUser, async (req, res) => {
     const body = req.body;
+    if(!body ||
+        (body.hasOwnProperty("id_sender") && body.id_sender == "") ||
+        (body.hasOwnProperty("id_recipient") && body.id_recipient == "") ||
+        (body.hasOwnProperty("message") && body.message == ""))
+        return res.sendStatus(400).end();
     try {
         const rowCount = await messagesModel.sendMessage(body.id_sender, body.id_recipient, body.message);
         if(rowCount === 0)
