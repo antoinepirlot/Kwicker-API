@@ -116,8 +116,11 @@ router.post("/login", async function (req, res, next) {
     return res.status(400).end();
 
   const authenticatedUser = await userModel.login(req.body);
-  if (!authenticatedUser) return res.status(401).end();
-  
+  if(authenticatedUser === 0)
+    return res.sendStatus(404).end();
+  if(authenticatedUser === 1)
+    return res.sendStatus(403).end();
+
   req.session.idUser = authenticatedUser.id_user;
   req.session.token = authenticatedUser.token;
 

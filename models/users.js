@@ -173,10 +173,10 @@ class Users {
 
   async login(body) {
     const userFound = await this.getUserByUsername(body.username);
-    if (!userFound) return;
+    if (!userFound) return 0;
 
     const match = await bcrypt.compare(body.password, userFound.password);
-    if (!match) return;
+    if (!match) return 1;
 
     const authenticatedUser = {
       id_user: userFound.id_user,
