@@ -13,7 +13,9 @@ router.get("/followeds/:idUser", authorizeUser, async function (req, res, next) 
 });
 
 router.post("/exists", authorizeUser, async function (req, res, next) {
-    if (!req.body)
+    if (!req.body ||
+        (req.body.hasOwnProperty("id_user_followed") && req.body.id_user_followed == "") ||
+        (req.body.hasOwnProperty("id_user_follower") && req.body.id_user_follower == ""))
         return res.sendStatus(400);
     try {
         if(await followsModel.existFollow(req.body))
@@ -26,7 +28,9 @@ router.post("/exists", authorizeUser, async function (req, res, next) {
 });
 
 router.post("/toggle", authorizeUser, async function (req, res, next) {
-    if (!req.body)
+    if (!req.body ||
+        (req.body.hasOwnProperty("id_user_followed") && req.body.id_user_followed == "") ||
+        (req.body.hasOwnProperty("id_user_follower") && req.body.id_user_follower == ""))
         return res.sendStatus(400);
     try {
         if(await followsModel.toggleFollow(req.body))
