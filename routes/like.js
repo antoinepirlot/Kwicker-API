@@ -19,7 +19,7 @@ router.get("/exist/:idUser/:idPost", authorizeUser, async (req, res) => {
     if (!req.params)
         return res.sendStatus(400);
     try {
-        const body = { id_user: req.params.idUser, id_post: req.params.idPost};
+        const body = { user_id: req.params.idUser, post_id: req.params.idPost};
         const rowCount = await likesModel.existLike(body);
         if (rowCount === 0)
             return res.sendStatus(200);
@@ -32,9 +32,9 @@ router.get("/exist/:idUser/:idPost", authorizeUser, async (req, res) => {
 /**
  * GET all user's likes
  */
-router.get("/user/:id_user", authorizeUser, async (req, res) => {
+router.get("/user/:user_id", authorizeUser, async (req, res) => {
     try {
-        const likes = await likesModel.getUserLikes(req.params.id_user);
+        const likes = await likesModel.getUserLikes(req.params.user_id);
         if (likes.length === 0)
             return res.sendStatus(404);
         return res.json(likes);
@@ -43,9 +43,9 @@ router.get("/user/:id_user", authorizeUser, async (req, res) => {
     }
 });
 
-router.get("/post/:id_post", authorizeUser, async (req, res) => {
+router.get("/post/:post_id", authorizeUser, async (req, res) => {
     try {
-        const likes = await likesModel.getPostLikes(req.params.id_post);
+        const likes = await likesModel.getPostLikes(req.params.post_id);
         return res.json(likes);
     } catch (e) {
         return res.sendStatus(502).end();

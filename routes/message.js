@@ -16,10 +16,10 @@ const messagesModel = new Messages();
 *
 **/
 
-router.get("/:id_sender/:id_recipient", authorizeUser, async (req, res) => {
+router.get("/:sender_id/:recipient_id", authorizeUser, async (req, res) => {
     console.log("GET/ messages");
     try {
-        const messages = await messagesModel.getMessages(req.params.id_sender, req.params.id_recipient);
+        const messages = await messagesModel.getMessages(req.params.sender_id, req.params.recipient_id);
         if(!messages)
             return res.sendStatus(404).end();
         return res.json(messages);
@@ -43,7 +43,7 @@ router.post("/", authorizeUser, async (req, res) => {
     console.log("POST/ message");
     const body = req.body;
     try {
-        const rowCount = await messagesModel.sendMessage(body.id_sender, body.id_recipient, body.message);
+        const rowCount = await messagesModel.sendMessage(body.sender_id, body.recipient_id, body.message);
         if(rowCount === 0)
             return res.sendStatus(502).end();
         return res.sendStatus(200).end();

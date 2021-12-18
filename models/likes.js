@@ -9,8 +9,8 @@ class Likes {
     async getAllLikes() {
         const query = {
             name: "fetch-likes",
-            text: `SELECT id_user,
-                          id_post
+            text: `SELECT user_id,
+                          post_id
                    FROM kwicker.likes`
         };
         try {
@@ -22,14 +22,14 @@ class Likes {
         }
     }
 
-    async getUserLikes(id_user) {
+    async getUserLikes(user_id) {
         const query = {
             name: "fetch-user-likes",
-            text: `SELECT id_user,
-                          id_post
+            text: `SELECT user_id,
+                          post_id
                    FROM kwicker.likes
-                   WHERE id_user = $1`,
-            values: [escape(id_user)]
+                   WHERE user_id = $1`,
+            values: [escape(user_id)]
         };
         try {
             const {rows} = await db.query(query);
@@ -40,13 +40,13 @@ class Likes {
         }
     }
 
-    async getPostLikes(id_post) {
+    async getPostLikes(post_id) {
         const query = {
-            text: `SELECT id_user,
-                          id_post
+            text: `SELECT user_id,
+                          post_id
                    FROM kwicker.likes
-                   WHERE id_post = $1`,
-            values: [escape(id_post)]
+                   WHERE post_id = $1`,
+            values: [escape(post_id)]
         };
         try{
             const {rows} = await db.query(query);
@@ -65,7 +65,7 @@ class Likes {
     async addLike(body) {
         const query = {
             text: "INSERT INTO kwicker.likes VALUES ($1, $2)",
-            values: [escape(body.id_user), escape(body.id_post)]
+            values: [escape(body.user_id), escape(body.post_id)]
         };
         try {
             await db.query(query)
@@ -76,8 +76,8 @@ class Likes {
     }
     async existLike(body) {
         const query = {
-            text: "SELECT id_user, id_post FROM kwicker.likes WHERE id_user = $1 AND id_post = $2",
-            values: [body.id_user, body.id_post]
+            text: "SELECT user_id, post_id FROM kwicker.likes WHERE user_id = $1 AND post_id = $2",
+            values: [body.user_id, body.post_id]
         };
         try {
             const rows = await db.query(query);
@@ -93,12 +93,12 @@ class Likes {
         let returnValue = true;
 
         if (await this.existLike(body)) {
-            query = "DELETE FROM kwicker.likes WHERE id_user = $1 AND id_post = $2";
+            query = "DELETE FROM kwicker.likes WHERE user_id = $1 AND post_id = $2";
             returnValue = false;
         }
 
         try {
-            await db.query(query, [body.id_user, body.id_post]);
+            await db.query(query, [body.user_id, body.post_id]);
             return returnValue;
         } catch (e) {
             console.log(e.stack);
@@ -111,9 +111,9 @@ class Likes {
         const query = {
             text: `DELETE
                    FROM kwicker.likes
-                   WHERE id_user = $1
-                     AND id_post = $2`,
-            values: [escape(body.id_user), escape(body.id_post)]
+                   WHERE user_id = $1
+                     AND post_id = $2`,
+            values: [escape(body.user_id), escape(body.post_id)]
         };
         try {
             const result = db.query(query);

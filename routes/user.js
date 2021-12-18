@@ -106,7 +106,7 @@ router.post("/login", async function (req, res, next) {
   if(authenticatedUser === 1)
     return res.sendStatus(403).end();
 
-  req.session.idUser = authenticatedUser.id_user;
+  req.session.idUser = authenticatedUser.user_id;
   req.session.token = authenticatedUser.token;
 
   return res.json(authenticatedUser);
@@ -158,10 +158,10 @@ router.put('/biography/:idUser', authorizeUser, async function(req, res, next) {
 });
 
 // Update user activation
-router.put("/activate/:id_user", authorizeAdmin, async (req, res) => {
+router.put("/activate/:user_id", authorizeAdmin, async (req, res) => {
   console.log("Activate user");
   try {
-    const rowCount = await userModel.activateUser(req.params.id_user);
+    const rowCount = await userModel.activateUser(req.params.user_id);
     if(rowCount === 0)
       return res.sendStatus(404).end();
     return res.sendStatus(200).end();
@@ -171,10 +171,10 @@ router.put("/activate/:id_user", authorizeAdmin, async (req, res) => {
 });
 
 // Set a member to admin
-router.put("/setadmin/:id_user", authorizeAdmin, async (req, res) => {
+router.put("/setadmin/:user_id", authorizeAdmin, async (req, res) => {
   console.log("PUT/ Set user admin");
   try {
-    const rowCount = await userModel.setAdmin(req.params.id_user);
+    const rowCount = await userModel.setAdmin(req.params.user_id);
     if(rowCount === 0)
       return res.sendStatus(404).end();
     return res.sendStatus(200).end();
@@ -184,10 +184,10 @@ router.put("/setadmin/:id_user", authorizeAdmin, async (req, res) => {
 });
 
 // Set a member non admin
-router.put("/setnotadmin/:id_user", authorizeAdmin, async (req, res) => {
+router.put("/setnotadmin/:user_id", authorizeAdmin, async (req, res) => {
   console.log("PUT/ Set user to non admin");
   try {
-    const rowCount = await userModel.setNotAdmin(req.params.id_user);
+    const rowCount = await userModel.setNotAdmin(req.params.user_id);
     if(rowCount === 0)
       return res.sendStatus(404).end();
     return res.sendStatus(200).end();
