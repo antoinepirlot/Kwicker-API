@@ -89,16 +89,21 @@ class Likes {
     }
 
     async toggleLike(body) {
-        let query = "INSERT INTO kwicker.likes VALUES ($1, $2)";
+        let query = {
+            text: "",
+            values: [body.id_user, body.id_post]
+        };
         let returnValue = true;
 
         if (await this.existLike(body)) {
-            query = "DELETE FROM kwicker.likes WHERE id_user = $1 AND id_post = $2";
+            query.text = "DELETE FROM kwicker.likes WHERE id_user = $1 AND id_post = $2";
             returnValue = false;
+        } else {
+            query.text = "INSERT INTO kwicker.likes VALUES ($1, $2)";
         }
 
         try {
-            await db.query(query, [body.id_user, body.id_post]);
+            await db.query(query);
             return returnValue;
         } catch (e) {
             console.log(e.stack);
