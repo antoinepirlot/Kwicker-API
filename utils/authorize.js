@@ -4,7 +4,7 @@ const userModel = new Users();
 const jwtSecret = process.env.jwtSecret;
 
 const authorizeAdmin = async (req, res, next) => {
-  let token = req.get("authorization");
+  let token = req.get("Authorization");
   if (!token) return res.status(401).end();
   try {
     const decoded = jwt.verify(token, jwtSecret);
@@ -20,8 +20,9 @@ const authorizeAdmin = async (req, res, next) => {
 };
 
 const authorizeUser = async (req, res, next) => {
-  let token = req.get("authorization");
-  if (!token) return res.status(401).end();
+  let token = req.get("Authorization");
+  if (!token)
+    return res.status(401).end();
   try {
     const decoded = jwt.verify(token, jwtSecret);
     const userFound = await userModel.getUserById(decoded.idUser);
