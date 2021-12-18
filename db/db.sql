@@ -16,6 +16,7 @@ CREATE TABLE kwicker.users
     is_admin      BOOLEAN      NOT NULL DEFAULT FALSE,
     biography     VARCHAR(500) NULL,
     date_creation TIMESTAMP    NOT NULL DEFAULT NOW()
+--     date_creation DATE    NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE kwicker.posts
@@ -27,6 +28,8 @@ CREATE TABLE kwicker.posts
     parent_post     INTEGER,
     is_removed      BOOLEAN      NOT NULL DEFAULT FALSE,
     date_creation   TIMESTAMP    NOT NULL DEFAULT NOW(),
+--     date_creation   TIMESTAMP    NOT NULL DEFAULT NOW(),
+--     hour_creation TIME NOT NULL DEFAULT now(),
     number_of_likes INT          NOT NULL DEFAULT 0 CHECK (number_of_likes >= 0),
     FOREIGN KEY (id_user) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (parent_post) REFERENCES kwicker.posts (id_post)
@@ -64,6 +67,8 @@ CREATE TABLE kwicker.messages
     id_recipient       INTEGER CHECK ( id_recipient <> messages.id_sender ),
     message            TEXT NOT NULL CHECK ( message <> '' ),
     date_creation      TIMESTAMP    NOT NULL DEFAULT NOW(),
+--     date_creation   TIMESTAMP    NOT NULL DEFAULT NOW(),
+--     hour_creation TIME NOT NULL DEFAULT now(),
     FOREIGN KEY (id_sender) REFERENCES kwicker.users (id_user),
     FOREIGN KEY (id_recipient) REFERENCES kwicker.users (id_user)
 );
