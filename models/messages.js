@@ -36,7 +36,7 @@ class Messages {
 
         try {
             const {rows} = await db.query(query);
-            //decrypt(rows);
+            decrypt(rows);
             return rows;
         } catch (e) {
             console.log(e.stack);
@@ -76,7 +76,7 @@ class Messages {
         const query = {
             text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
                    VALUES ($1, $2, $3)`,
-            values: [escape(id_sender), escape(id_recipient), escape(message)]
+            values: [escape(id_sender), escape(id_recipient), encrypt(message)]
         };
         try {
             const result = await db.query(query);
