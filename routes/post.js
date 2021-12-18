@@ -31,10 +31,10 @@ router.get("/", authorizeUser, async (req, res) => {
 /**
  * GET all posts from a user identified by its id
  */
-router.get("/user/:user_id", authorizeUser, async (req, res) => {
+router.get("/user/:id_user", authorizeUser, async (req, res) => {
     console.log("GET/ : Posts from a user");
     try {
-        const posts = await postsModel.getUserPosts(req.params.user_id);
+        const posts = await postsModel.getUserPosts(req.params.id_user);
 
         return res.json(posts);
     } catch (e) {
@@ -188,8 +188,8 @@ router.delete("/admin/:id_post", authorizeAdmin, async (req, res) => {
     }
 });
 
-async function removePost(post_id) {
-    return await postsModel.removePost(post_id);
+async function removePost(id_post) {
+    return await postsModel.removePost(id_post);
 }
 
 module.exports = router;

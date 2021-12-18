@@ -22,9 +22,9 @@ class Users {
 **/
 
   async getAllUsers() {
-    const query = `SELECT user_id, forename, lastname, email, username, image, password, is_active, is_admin, biography, creation_date 
+    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
                     FROM kwicker.users
-                    ORDER BY user_id`;
+                    ORDER BY id_user`;
     try {
       const { rows } = await db.query(query);
       return rows;
@@ -35,7 +35,7 @@ class Users {
   }
 
   async getAllUsersSimilarTo(search) {
-    const query = `SELECT user_id, forename, lastname, email, username, image, is_active, is_admin, biography, creation_date 
+    const query = `SELECT id_user, forename, lastname, email, username, image, is_active, is_admin, biography, date_creation 
                     FROM kwicker.users
                     WHERE (lower(forename) LIKE $1 OR lower(lastname) LIKE $1 OR lower(username) LIKE $1)
                     AND is_active = TRUE`
@@ -48,8 +48,8 @@ class Users {
   }
 
   async getUserById(id) {
-    const query = `SELECT user_id, forename, lastname, email, username, image, password, is_active, is_admin, biography, creation_date 
-                    FROM kwicker.users u WHERE u.user_id = $1`;
+    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
+                    FROM kwicker.users u WHERE u.id_user = $1`;
     try {
       const { rows } = await db.query(query, [id]);
       return rows[0];
@@ -60,7 +60,7 @@ class Users {
   }
 
   async getUserByUsername(username) {
-    const query = `SELECT user_id, forename, lastname, email, username, password, is_active, is_admin, biography, creation_date 
+    const query = `SELECT id_user, forename, lastname, email, username, password, is_active, is_admin, biography, date_creation 
                    FROM kwicker.users WHERE username = $1`;
     try {
       const { rows } = await db.query(query, [username]);
@@ -73,8 +73,8 @@ class Users {
   }
 
   async getProfileInformationsById(id) {
-    const query = `SELECT user_id, forename, lastname, email, username, is_active, is_admin, biography, creation_date 
-                   FROM kwicker.users WHERE user_id = $1`;
+    const query = `SELECT id_user, forename, lastname, email, username, is_active, is_admin, biography, date_creation 
+                   FROM kwicker.users WHERE id_user = $1`;
     try {
       const { rows } = await db.query(query, [id]);
 
@@ -99,7 +99,7 @@ class Users {
 **/
 
   async deleteUser(id) {
-    const query = `UPDATE kwicker.users SET is_active = FALSE WHERE user_id = $1`;
+    const query = `UPDATE kwicker.users SET is_active = FALSE WHERE id_user = $1`;
     try {
       const { rows } = await db.query(query, [id]);
       return rows[0];
@@ -143,13 +143,13 @@ class Users {
     if (!match) return 1;
 
     const authenticatedUser = {
-      user_id: userFound.user_id,
+      id_user: userFound.id_user,
       is_admin: userFound.is_admin,
       token: "None",
     };
 
     const token = jwt.sign(
-        { idUser: authenticatedUser.user_id },
+        { idUser: authenticatedUser.id_user },
         process.env.jwtSecret,
         { expiresIn: LIFETIME_JWT }
     );
@@ -177,7 +177,7 @@ class Users {
 **/
 
   async updateUserForename(id, forename) {
-    const query = `UPDATE kwicker.users SET forename = $1 WHERE user_id = $2`;
+    const query = `UPDATE kwicker.users SET forename = $1 WHERE id_user = $2`;
     try {
       return await db.query(query, [forename, id]) != null;
     } catch (e) {
@@ -187,7 +187,7 @@ class Users {
   }
 
   async updateUserLastname(id, lastname) {
-    const query = `UPDATE kwicker.users SET lastname = $1 WHERE user_id = $2`;
+    const query = `UPDATE kwicker.users SET lastname = $1 WHERE id_user = $2`;
     try {
       return await db.query(query, [lastname, id]) != null;
     } catch (e) {
@@ -197,7 +197,7 @@ class Users {
   }
 
   async updateUserBiography(id, biography) {
-    const query = `UPDATE kwicker.users SET biography = $1 WHERE user_id = $2`;
+    const query = `UPDATE kwicker.users SET biography = $1 WHERE id_user = $2`;
     try {
       let biographyUser = biography;
       if (!biographyUser.trim()) biographyUser = null;
@@ -210,7 +210,7 @@ class Users {
 
 
   async updateUserImage(id, image) {
-    const query = `UPDATE kwicker.users SET image = $1 WHERE user_id = $2`;
+    const query = `UPDATE kwicker.users SET image = $1 WHERE id_user = $2`;
     try {
       const { rows } = await db.query(query, [image, id]);
       return rows;
@@ -222,15 +222,15 @@ class Users {
 
   /**
    * Activate the user an return 1 if it worked, otherwise 0
-   * @param user_id
+   * @param id_user
    * @returns {Promise<void>}
    */
-  async activateUser(user_id) {
+  async activateUser(id_user) {
     const query = {
       text: `UPDATE kwicker.users
              SET is_active = TRUE
-             WHERE user_id = $1`,
-      values: [escape(user_id)]
+             WHERE id_user = $1`,
+      values: [escape(id_user)]
     };
     try{
       const result = await db.query(query);
@@ -243,15 +243,15 @@ class Users {
 
   /**
    * Set a user to admin
-   * @param user_id
+   * @param id_user
    * @returns {Promise<null|number|*>}
    */
-  async setAdmin(user_id) {
+  async setAdmin(id_user) {
     const query = {
       text: `UPDATE kwicker.users
              SET is_admin = TRUE
-             WHERE user_id =  $1`,
-      values: [user_id]
+             WHERE id_user =  $1`,
+      values: [id_user]
     };
     try {
       const result = await db.query(query);
@@ -264,15 +264,15 @@ class Users {
 
   /**
    * Set a user from admin to non admin
-   * @param user_id
+   * @param id_user
    * @returns {Promise<null|number|*>}
    */
-  async setNotAdmin(user_id) {
+  async setNotAdmin(id_user) {
     const query = {
       text: `UPDATE kwicker.users
              SET is_admin = FALSE
-             WHERE user_id = $1`,
-      values: [user_id]
+             WHERE id_user = $1`,
+      values: [id_user]
   };
     try {
       const result = await db.query(query);

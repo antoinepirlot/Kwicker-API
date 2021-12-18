@@ -6,9 +6,9 @@ class Follows {
 
     async existFollow(body) {
         const query = {
-            text: "SELECT user_followed_id, user_follower_id FROM kwicker.follows " +
-                    "WHERE user_followed_id = $1 AND user_follower_id = $2",
-            values: [body.user_followed_id, body.user_follower_id]
+            text: "SELECT id_user_followed, id_user_follower FROM kwicker.follows " +
+                    "WHERE id_user_followed = $1 AND id_user_follower = $2",
+            values: [body.id_user_followed, body.id_user_follower]
         };
         try {
             const rows = await db.query(query);
@@ -21,18 +21,18 @@ class Follows {
 
     async toggleFollow(body) {
 
-        if (body.user_followed_id == body.user_follower_id) return;
+        if (body.id_user_followed == body.id_user_follower) return;
 
         let query = "INSERT INTO kwicker.follows VALUES ($1, $2)";
         let returnValue = true;
 
         if (await this.existFollow(body)) {
-            query = "DELETE FROM kwicker.follows WHERE user_followed_id = $1 AND user_follower_id = $2";
+            query = "DELETE FROM kwicker.follows WHERE id_user_followed = $1 AND id_user_follower = $2";
             returnValue = false;
         }
 
         try {
-            await db.query(query, [body.user_followed_id, body.user_follower_id]);
+            await db.query(query, [body.id_user_followed, body.id_user_follower]);
             return returnValue;
         } catch (e) {
             console.log(e.stack);
@@ -41,7 +41,7 @@ class Follows {
     }
 
     async getFollowers(idUser) {
-        const query = `SELECT user_follower_id FROM kwicker.follows WHERE user_followed_id = $1`;
+        const query = `SELECT id_user_follower FROM kwicker.follows WHERE id_user_followed = $1`;
         try {
             const { rows } = await db.query(query, [idUser]);
             return rows;
@@ -52,7 +52,7 @@ class Follows {
     }
 
     async getFolloweds(idUser) {
-        const query = `SELECT user_followed_id FROM kwicker.follows WHERE user_follower_id = $1`;
+        const query = `SELECT id_user_followed FROM kwicker.follows WHERE id_user_follower = $1`;
         try {
             const { rows } = await db.query(query, [idUser]);
             return rows;

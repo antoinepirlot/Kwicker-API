@@ -16,21 +16,21 @@ class Messages {
 
     /**
      * Get all messages for a conversation
-     * @param sender_id
-     * @param recipient_id
+     * @param id_sender
+     * @param id_recipient
      * @returns {Promise<*>}
      */
-    async getMessages(sender_id, recipient_id) {
+    async getMessages(id_sender, id_recipient) {
         const query = {
-            text: `SELECT message_id,
-                          sender_id,
-                          recipient_id,
+            text: `SELECT id_message,
+                          id_sender,
+                          id_recipient,
                           message
                    FROM kwicker.messages
-                   WHERE (sender_id = $1 AND recipient_id = $2)
-                      OR (sender_id = $2 AND recipient_id = $1)
-                   ORDER BY message_id`,
-            values: [escape(sender_id), escape(recipient_id)]
+                   WHERE (id_sender = $1 AND id_recipient = $2)
+                      OR (id_sender = $2 AND id_recipient = $1)
+                   ORDER BY id_message`,
+            values: [escape(id_sender), escape(id_recipient)]
         };
 
         try {
@@ -45,16 +45,16 @@ class Messages {
 
     /**
      * Insert a message between 2 users into the database
-     * @param sender_id
-     * @param recipient_id
+     * @param id_sender
+     * @param id_recipient
      * @param message
      * @returns {Promise<null|number|*>}
      */
-    async sendMessage(sender_id, recipient_id, message) {
+    async sendMessage(id_sender, id_recipient, message) {
         const query = {
-            text: `INSERT INTO kwicker.messages (sender_id, recipient_id, message)
+            text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
                    VALUES ($1, $2, $3)`,
-            values: [escape(sender_id), escape(recipient_id), escape(message)]
+            values: [escape(id_sender), escape(id_recipient), escape(message)]
         };
         try {
             const result = await db.query(query);
