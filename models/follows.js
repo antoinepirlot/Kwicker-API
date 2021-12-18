@@ -23,16 +23,21 @@ class Follows {
 
         if (body.id_user_followed == body.id_user_follower) return;
 
-        let query = "INSERT INTO kwicker.follows VALUES ($1, $2)";
+        let query = {
+            text: "",
+            values: [escape(body.id_user_followed), escape(body.id_user_follower)]
+        };
         let returnValue = true;
 
         if (await this.existFollow(body)) {
-            query = "DELETE FROM kwicker.follows WHERE id_user_followed = $1 AND id_user_follower = $2";
+            query.text = "DELETE FROM kwicker.follows WHERE id_user_followed = $1 AND id_user_follower = $2";
             returnValue = false;
+        } else {
+            query.text = "INSERT INTO kwicker.follows VALUES ($1, $2)";
         }
 
         try {
-            await db.query(query, [escape(body.id_user_followed), escape(body.id_user_follower)]);
+            await db.query(query);
             return returnValue;
         } catch (e) {
             console.log(e.stack);
@@ -41,9 +46,12 @@ class Follows {
     }
 
     async getFollowers(idUser) {
-        const query = `SELECT id_user_follower FROM kwicker.follows WHERE id_user_followed = $1`;
+        const query = {
+            text: `SELECT id_user_follower FROM kwicker.follows WHERE id_user_followed = $1`,
+            values: [escape(idUser)]
+        };
         try {
-            const { rows } = await db.query(query, [escape(idUser)]);
+            const { rows } = await db.query(query);
             return rows;
         } catch (e) {
             console.log(e.stack);
@@ -52,9 +60,12 @@ class Follows {
     }
 
     async getFolloweds(idUser) {
-        const query = `SELECT id_user_followed FROM kwicker.follows WHERE id_user_follower = $1`;
+        const query = {
+            text: `SELECT id_user_followed FROM kwicker.follows WHERE id_user_follower = $1`,
+            values: [escape(idUser)]
+        };
         try {
-            const { rows } = await db.query(query, [escape(idUser)]);
+            const { rows } = await db.query(query);
             return rows;
         } catch (e) {
             console.log(e.stack);
