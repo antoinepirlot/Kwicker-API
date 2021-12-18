@@ -28,6 +28,18 @@ router.get("/:id_sender/:id_recipient", authorizeUser, async (req, res) => {
     }
 });
 
+router.get("/recipients/:id_sender", authorizeUser, async (req, res) => {
+    console.log("GET / recipients");
+    try {
+        const messages = await messagesModel.getConversationUsers(req.params.id_sender);
+        if(!messages)
+            return res.sendStatus(404).end();
+        return res.json(messages);
+    } catch (e) {
+        res.sendStatus(502);
+    }
+});
+
 /*
 *
 *  ██████╗░░█████╗░░██████╗████████╗
@@ -40,7 +52,6 @@ router.get("/:id_sender/:id_recipient", authorizeUser, async (req, res) => {
 **/
 
 router.post("/", authorizeUser, async (req, res) => {
-    console.log("POST/ message");
     const body = req.body;
     try {
         const rowCount = await messagesModel.sendMessage(body.id_sender, body.id_recipient, body.message);

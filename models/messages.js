@@ -45,6 +45,27 @@ class Messages {
     }
 
     /**
+     * Getting all users the sender talked with
+     * @param id_sender
+     * @returns {Promise<number|*>}
+     */
+    async getConversationUsers(id_sender) {
+        const query = {
+            text: `SELECT id_recipient
+                   FROM kwicker.messages
+                   WHERE id_sender = $1`,
+            values: [id_sender]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting all users the sender talked with");
+        }
+    }
+
+    /**
      * Insert a message between 2 users into the database
      * @param id_sender
      * @param id_recipient
