@@ -141,8 +141,6 @@ router.post("/login", async function (req, res, next) {
 
 // updateUserForename()
 router.put('/forename/:idUser', authorizeUser, async function(req, res, next) {
-  console.log(req.body)
-
   if (!req.body ||
       !req.body.forename || !req.body.forename.trim()
   )

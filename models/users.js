@@ -235,7 +235,6 @@ class Users {
   async updateUserBiography(id, biography) {
     const query = `UPDATE kwicker.users SET biography = $1 WHERE id_user = $2`;
     try {
-      console.log(biography.trim())
       let biographyUser = biography;
       if (!biographyUser.trim()) biographyUser = null;
       return await db.query(query, [biographyUser, id]) != null;
