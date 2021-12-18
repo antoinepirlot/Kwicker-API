@@ -143,7 +143,9 @@ router.put('/lastname/:idUser', authorizeUser, async function(req, res, next) {
 
 // Update user biography
 router.put('/biography/:idUser', authorizeUser, async function(req, res, next) {
-  if (!req.body) return res.status(400).end();
+  if (!req.body ||
+      !req.body.hasOwnProperty("biography"))
+    return res.status(400).end();
   const updatedUser = await userModel.updateUserBiography(req.params.idUser, req.body.biography);
   if (!updatedUser) return res.status(403).end();
   return res.json(updatedUser);
