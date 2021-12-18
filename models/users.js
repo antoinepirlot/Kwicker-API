@@ -21,18 +21,6 @@ class Users {
 *
 **/
 
-  async getAllActiveUsers() {
-    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
-                    FROM kwicker.users WHERE is_active = TRUE`;
-    try {
-      const { rows } = await db.query(query);
-      return rows;
-    } catch (e) {
-      console.log(e.stack);
-      return false;
-    }
-  }
-
   async getAllUsers() {
     const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
                     FROM kwicker.users
@@ -59,36 +47,12 @@ class Users {
     }
   }
 
-  async getUserByEmail(email) {
-    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
-                    FROM kwicker.users u WHERE u.email = $1`;
-    try {
-      const { rows } = await db.query(query, [email]);
-      return rows[0];
-    } catch (e) {
-      console.log(e.stack);
-      return false;
-    }
-  }
-
   async getUserById(id) {
     const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
                     FROM kwicker.users u WHERE u.id_user = $1`;
     try {
       const { rows } = await db.query(query, [id]);
       return rows[0];
-    } catch (e) {
-      console.log(e.stack);
-      return false;
-    }
-  }
-
-  async getIdByEmail(email) {
-    const query = `SELECT id_user FROM kwicker.users WHERE email = $1`;
-    try {
-      const { rows } = await db.query(query, [email]);
-      if (!rows || rows.length === 0) return;
-      return rows[0].id_user;
     } catch (e) {
       console.log(e.stack);
       return false;
@@ -235,7 +199,6 @@ class Users {
   async updateUserBiography(id, biography) {
     const query = `UPDATE kwicker.users SET biography = $1 WHERE id_user = $2`;
     try {
-      console.log(biography.trim())
       let biographyUser = biography;
       if (!biographyUser.trim()) biographyUser = null;
       return await db.query(query, [biographyUser, id]) != null;
