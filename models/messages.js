@@ -31,7 +31,7 @@ class Messages {
                    WHERE (id_sender = $1 AND id_recipient = $2)
                       OR (id_sender = $2 AND id_recipient = $1)
                    ORDER BY id_message`,
-            values: [escape(id_sender), escape(id_recipient)]
+            values: [id_sender, id_recipient]
         };
 
         try {
@@ -51,10 +51,12 @@ class Messages {
      */
     async getConversationUsers(id_sender) {
         const query = {
-            text: `SELECT DISTINCT id_recipient
+            text: `SELECT DISTINCT id_recipient,
+                                   id_message
                    FROM kwicker.messages
-                   WHERE id_sender = $1`,
-            values: [escape(id_sender)]
+                   WHERE id_sender = $1
+                   ORDER BY id_message`,
+            values: [id_sender]
         };
         try {
             const {rows} = await db.query(query);
@@ -62,6 +64,26 @@ class Messages {
         } catch (e) {
             console.log(e.stack);
             throw new Error("Error while getting all users the sender talked with");
+        }
+    }
+
+    async getLastConversationWith(id_sender) {
+        const query = {
+            text: `SELECT DISTINCT id_recipient,
+                                   id_message
+                   FROM kwicker.messages
+                   WHERE id_sender = $1
+                      OR id_recipient = $1
+                   ORDER BY id_message DESC
+                   LIMIT 1`,
+            values: [id_sender]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows[0].id_recipient;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting the last conversation id_recipient.");
         }
     }
 
@@ -76,7 +98,7 @@ class Messages {
         const query = {
             text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
                    VALUES ($1, $2, $3)`,
-            values: [escape(id_sender), escape(id_recipient), encrypt(message)] //escape for message is in crypt.js wjile decrypt
+            values: [escape(id_sender), escape(id_recipient), encrypt(escape(message))] //escape for message is in crypt.js wjile decrypt
         };
         try {
             const result = await db.query(query);

@@ -230,7 +230,7 @@ class Posts {
             text: "UPDATE kwicker.posts SET image = $1, message = $2 WHERE id_post = $3",
             values: [escape(body.image),
                      escape(body.message),
-                     escape(id_post)]
+                     id_post]
         } ;
         try {
             const result = db.query(query);
@@ -278,7 +278,7 @@ class Posts {
             text: `UPDATE kwicker.posts
                        SET is_removed = TRUE
                        WHERE id_post = $1`,
-            values: [escape(id_post)]
+            values: [id_post]
         };
         try {
             const result = await db.query(query);

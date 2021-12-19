@@ -7,7 +7,7 @@ function encrypt(message) {
 
 function decrypt(rows) {
     rows.forEach((row) => {
-        row["message"] = escape(cryptoJs.enc.Base64.parse(row["message"]).toString(cryptoJs.enc.Utf8));
+        row["message"] = cryptoJs.enc.Base64.parse(row["message"]).toString(cryptoJs.enc.Utf8);
     });
 }
 

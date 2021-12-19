@@ -25,3 +25,7 @@ Content-Type: application/json
   "id_recipient": 1,
   "message": "Yo mon reuf"
 }
+
+###
+GET {{host}}/messages/lastConversationWith/1
+Authorization: {{token}}
