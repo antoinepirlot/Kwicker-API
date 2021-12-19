@@ -27,9 +27,6 @@ class Users {
                     ORDER BY id_user`;
     try {
       const { rows } = await db.query(query);
-      rows.forEach((row) => {
-        row["biography"] = unescape(row["biography"]);
-      })
       return rows;
     } catch (e) {
       console.log(e.stack);
@@ -52,7 +49,7 @@ class Users {
              FROM kwicker.users
              WHERE (lower(forename) LIKE $1 OR lower(lastname) LIKE $1 OR lower(username) LIKE $1)
                AND is_active = TRUE`,
-      values: [escape(search + '%')]
+      values: [search + '%']
     };
     try {
       const { rows } = await db.query(query);
@@ -77,7 +74,7 @@ class Users {
                     date_creation
              FROM kwicker.users u
              WHERE u.id_user = $1`,
-      values: [escape(id)]
+      values: [id]
     };
     try {
       const { rows } = await db.query(query);
@@ -102,7 +99,7 @@ class Users {
                     date_creation
              FROM kwicker.users
              WHERE username = $1`,
-      values: [escape(username)]
+      values: [username]
     };
     try {
       const { rows } = await db.query(query);
@@ -127,13 +124,10 @@ class Users {
                     date_creation
              FROM kwicker.users
              WHERE id_user = $1`,
-      values: [escape(id)]
+      values: [id]
     };
     try {
       const { rows } = await db.query(query);
-      rows.forEach((row) => {
-        row["biography"] = unescape(row["biography"]);
-      });
       if (!rows || rows.length === 0) return;
       return rows[0];
     } catch (e) {
@@ -159,7 +153,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET is_active = FALSE
              WHERE id_user = $1`,
-      values: [escape(id)]
+      values: [id]
     }
     try {
       const { rows } = await db.query(query);
@@ -242,7 +236,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET forename = $1
              WHERE id_user = $2`,
-      values: [escape(forename), escape(id)]
+      values: [escape(forename), id]
     };
     try {
       return await db.query(query) != null;
@@ -257,7 +251,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET lastname = $1
              WHERE id_user = $2`,
-      values: [escape(lastname), escape(id)]
+      values: [escape(lastname), id]
     };
     try {
       return await db.query(query) != null;
@@ -272,7 +266,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET biography = $1
              WHERE id_user = $2`,
-      values: [escape(biography), escape(id)]
+      values: [escape(biography), id]
     };
 
     try {
@@ -289,7 +283,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET image = $1
              WHERE id_user = $2`,
-      values: [escape(image), escape(id)]
+      values: [escape(image), id]
     };
     try {
       const { rows } = await db.query(query);
@@ -310,7 +304,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET is_active = TRUE
              WHERE id_user = $1`,
-      values: [escape(id_user)]
+      values: [id_user]
     };
     try{
       const result = await db.query(query);
@@ -331,7 +325,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET is_admin = TRUE
              WHERE id_user =  $1`,
-      values: [escape(id_user)]
+      values: [id_user]
     };
     try {
       const result = await db.query(query);
@@ -352,7 +346,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET is_admin = FALSE
              WHERE id_user = $1`,
-      values: [escape(id_user)]
+      values: [id_user]
   };
     try {
       const result = await db.query(query);
