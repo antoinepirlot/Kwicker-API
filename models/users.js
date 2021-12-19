@@ -27,6 +27,9 @@ class Users {
                     ORDER BY id_user`;
     try {
       const { rows } = await db.query(query);
+      rows.forEach((row) => {
+        row["biography"] = unescape(row["biography"]);
+      })
       return rows;
     } catch (e) {
       console.log(e.stack);
@@ -128,7 +131,9 @@ class Users {
     };
     try {
       const { rows } = await db.query(query);
-
+      rows.forEach((row) => {
+        row["biography"] = unescape(row["biography"]);
+      });
       if (!rows || rows.length === 0) return;
       return rows[0];
     } catch (e) {
