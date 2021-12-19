@@ -53,7 +53,8 @@ class Messages {
         const query = {
             text: `SELECT DISTINCT id_recipient
                    FROM kwicker.messages
-                   WHERE id_sender = $1`,
+                   WHERE id_sender = $1
+                   ORDER BY id_message`,
             values: [id_sender]
         };
         try {
@@ -62,6 +63,25 @@ class Messages {
         } catch (e) {
             console.log(e.stack);
             throw new Error("Error while getting all users the sender talked with");
+        }
+    }
+
+    async getLastConversationWith(id_sender) {
+        const query = {
+            text: `SELECT DISTINCT id_recipient,
+                                   id_message
+                   FROM kwicker.messages
+                   WHERE id_sender = $1
+                   ORDER BY id_message DESC
+                   LIMIT 1`,
+            values: [id_sender]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows[0].id_recipient;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting the last conversation id_recipient.");
         }
     }
 
