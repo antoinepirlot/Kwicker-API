@@ -31,7 +31,7 @@ class Messages {
                    WHERE (id_sender = $1 AND id_recipient = $2)
                       OR (id_sender = $2 AND id_recipient = $1)
                    ORDER BY id_message`,
-            values: [escape(id_sender), escape(id_recipient)]
+            values: [id_sender, id_recipient]
         };
 
         try {
@@ -54,7 +54,7 @@ class Messages {
             text: `SELECT DISTINCT id_recipient
                    FROM kwicker.messages
                    WHERE id_sender = $1`,
-            values: [escape(id_sender)]
+            values: [id_sender]
         };
         try {
             const {rows} = await db.query(query);
