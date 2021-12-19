@@ -78,7 +78,7 @@ class Messages {
         };
         try {
             const {rows} = await db.query(query);
-            return rows[0].id_recipient;
+            return rows[0];
         } catch (e) {
             console.log(e.stack);
             throw new Error("Error while getting the last conversation id_recipient.");
