@@ -73,6 +73,7 @@ class Messages {
                                    id_message
                    FROM kwicker.messages
                    WHERE id_sender = $1
+                      OR id_recipient = $1
                    ORDER BY id_message DESC
                    LIMIT 1`,
             values: [id_sender]
