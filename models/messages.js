@@ -102,6 +102,24 @@ class Messages {
         }
     }
 
+    async getConversationWith(id_user) {
+        const query = {
+            text: `SELECT DISTINCT id_sender,
+                                   id_recipient
+                   FROM kwicker.messages
+                   WHERE id_sender = $1
+                      OR id_recipient = $1`,
+            values: [id_user]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows[0];
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting the last conversation id_recipient.");
+        }
+    }
+
     /*
     *
     *  ██████╗░░█████╗░░██████╗████████╗

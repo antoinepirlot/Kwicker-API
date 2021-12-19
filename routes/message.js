@@ -65,6 +65,18 @@ router.get("/lastConversationWith/:id_sender", authorizeUser, async (req, res) =
     }
 });
 
+router.get("/conversationWith/:id_user", authorizeUser, async (req, res) => {
+    console.log("GET/ lastConversationWith");
+    try {
+        const recipient = await messagesModel.getConversationWith(req.params.id_user);
+        if(!recipient)
+            return res.sendStatus(404).end();
+        return res.json(recipient);
+    } catch (e) {
+        res.sendStatus(502);
+    }
+});
+
 /*
 *
 *  ██████╗░░█████╗░░██████╗████████╗
