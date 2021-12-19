@@ -51,7 +51,8 @@ class Messages {
      */
     async getConversationUsers(id_sender) {
         const query = {
-            text: `SELECT DISTINCT id_recipient
+            text: `SELECT DISTINCT id_recipient,
+                                   id_message
                    FROM kwicker.messages
                    WHERE id_sender = $1
                    ORDER BY id_message`,

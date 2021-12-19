@@ -31,10 +31,10 @@ router.get("/getMessages/:id_sender/:id_recipient", authorizeUser, async (req, r
 router.get("/recipients/:id_sender", authorizeUser, async (req, res) => {
     console.log("GET/ recipients");
     try {
-        const messages = await messagesModel.getConversationUsers(req.params.id_sender);
-        if(!messages)
+        const recipients = await messagesModel.getConversationUsers(req.params.id_sender);
+        if(recipients.length === 0)
             return res.sendStatus(404).end();
-        return res.json(messages);
+        return res.json(recipients);
     } catch (e) {
         res.sendStatus(502);
     }
