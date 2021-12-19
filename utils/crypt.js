@@ -1,8 +1,8 @@
 const cryptoJs = require("crypto-js");
-const messagePassword = process.env.messagesPassword;
+const messagePassword = process.env.PASSPHRASE;
 
 function encrypt(message) {
-    return cryptoJs.AES.encrypt(message, messagePassword);
+    return cryptoJs.AES.encrypt(message, messagePassword).toString();
 }
 
 function decrypt(rows) {

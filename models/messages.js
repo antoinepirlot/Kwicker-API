@@ -53,7 +53,8 @@ class Messages {
         const query = {
             text: `SELECT DISTINCT id_recipient
                    FROM kwicker.messages
-                   WHERE id_sender = $1`,
+                   WHERE id_sender = $1
+                      OR id_recipient = $1`,
             values: [id_sender]
         };
         try {

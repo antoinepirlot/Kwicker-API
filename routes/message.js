@@ -1,6 +1,7 @@
 const express = require("express");
 const {Messages} = require("../models/messages");
 const {authorizeUser} = require("../utils/authorize");
+const Console = require("console");
 
 const router = express.Router();
 const messagesModel = new Messages();
@@ -28,10 +29,10 @@ router.get("/getMessages/:id_sender/:id_recipient", authorizeUser, async (req, r
     }
 });
 
-router.get("/recipients/:id_sender", authorizeUser, async (req, res) => {
+router.get("/recipients/:id_user", authorizeUser, async (req, res) => {
     console.log("GET/ recipients");
     try {
-        const recipients = await messagesModel.getConversationUsers(req.params.id_sender);
+        const recipients = await messagesModel.getConversationUsers(req.params.id_user);
         if(recipients.length === 0)
             return res.sendStatus(404).end();
         return res.json(recipients);
