@@ -268,11 +268,13 @@ class Users {
   }
 
   async updateUserBiography(id, biography) {
+    let biographyFinal = escape(biography);
+    if (!biography) biographyFinal = biography;
     const query = {
       text: `UPDATE kwicker.users
              SET biography = $1
              WHERE id_user = $2`,
-      values: [escape(biography), escape(id)]
+      values: [biographyFinal, escape(id)]
     };
 
     try {
