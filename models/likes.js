@@ -77,7 +77,7 @@ class Likes {
     async existLike(body) {
         const query = {
             text: "SELECT id_user, id_post FROM kwicker.likes WHERE id_user = $1 AND id_post = $2",
-            values: [escape(body.id_user), escape(body.id_post)]
+            values: [body.id_user, body.id_post]
         };
         try {
             const rows = await db.query(query);
@@ -91,15 +91,17 @@ class Likes {
     async toggleLike(body) {
         let query = {
             text: "",
-            values: [escape(body.id_user), escape(body.id_post)]
+            values: []
         };
         let returnValue = true;
 
         if (await this.existLike(body)) {
             query.text = "DELETE FROM kwicker.likes WHERE id_user = $1 AND id_post = $2";
+            query.values = [body.id_user, body.id_post];
             returnValue = false;
         } else {
             query.text = "INSERT INTO kwicker.likes VALUES ($1, $2)";
+            query.values = [escape(body.id_user), escape(body.id_post)];
         }
 
         try {
@@ -118,7 +120,7 @@ class Likes {
                    FROM kwicker.likes
                    WHERE id_user = $1
                      AND id_post = $2`,
-            values: [escape(body.id_user), escape(body.id_post)]
+            values: [body.id_user, body.id_post]
         };
         try {
             const result = db.query(query);

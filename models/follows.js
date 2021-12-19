@@ -6,9 +6,9 @@ class Follows {
 
     async existFollow(body) {
         const query = {
-            text: "SELECT id_user_followed, id_user_follower FROM kwicker.follows " +
-                    "WHERE id_user_followed = $1 AND id_user_follower = $2",
-            values: [escape(body.id_user_followed), escape(body.id_user_follower)]
+            text: `SELECT id_user_followed, id_user_follower FROM kwicker.follows
+                    WHERE id_user_followed = $1 AND id_user_follower = $2`,
+            values: [body.id_user_followed, body.id_user_follower]
         };
         try {
             const rows = await db.query(query);
@@ -25,15 +25,17 @@ class Follows {
 
         let query = {
             text: "",
-            values: [escape(body.id_user_followed), escape(body.id_user_follower)]
+            values: []
         };
         let returnValue = true;
 
         if (await this.existFollow(body)) {
             query.text = "DELETE FROM kwicker.follows WHERE id_user_followed = $1 AND id_user_follower = $2";
+            query.values = [body.id_user_followed, body.id_user_follower];
             returnValue = false;
         } else {
             query.text = "INSERT INTO kwicker.follows VALUES ($1, $2)";
+            query.values = [escape(body.id_user_followed), escape(body.id_user_follower)];
         }
 
         try {
@@ -48,7 +50,7 @@ class Follows {
     async getFollowers(idUser) {
         const query = {
             text: `SELECT id_user_follower FROM kwicker.follows WHERE id_user_followed = $1`,
-            values: [escape(idUser)]
+            values: [idUser]
         };
         try {
             const { rows } = await db.query(query);
@@ -62,7 +64,7 @@ class Follows {
     async getFolloweds(idUser) {
         const query = {
             text: `SELECT id_user_followed FROM kwicker.follows WHERE id_user_follower = $1`,
-            values: [escape(idUser)]
+            values: [idUser]
         };
         try {
             const { rows } = await db.query(query);
