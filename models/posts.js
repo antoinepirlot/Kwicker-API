@@ -191,18 +191,14 @@ class Posts {
      * @returns {Promise<void>}
      */
     async createPost(body) {
-        if (body.image != null) body.image = escape(body.image);
-        if (body.parent_post != null) body.parent_post = escape(body.parent_post);
-
         const query = {
             text: `INSERT INTO kwicker.posts (id_user, image, message, parent_post)
                    VALUES ($1, $2, $3, $4)`,
-            values: [escape(body.id_user),
-                     body.image,
+            values: [body.id_user,
+                     escape(body.image),
                      escape(body.message),
                      body.parent_post]
         };
-
         try {
             await db.query(query);
         } catch (e) {
