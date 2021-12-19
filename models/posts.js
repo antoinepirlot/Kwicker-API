@@ -194,10 +194,10 @@ class Posts {
         const query = {
             text: `INSERT INTO kwicker.posts (id_user, image, message, parent_post)
                    VALUES ($1, $2, $3, $4)`,
-            values: [escape(body.id_user),
+            values: [body.id_user,
                      escape(body.image),
                      escape(body.message),
-                     escape(body.parent_post)]
+                     body.parent_post]
         };
         try {
             await db.query(query);
