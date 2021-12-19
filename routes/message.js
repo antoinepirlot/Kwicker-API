@@ -32,7 +32,19 @@ router.get("/getMessages/:id_sender/:id_recipient", authorizeUser, async (req, r
 router.get("/recipients/:id_user", authorizeUser, async (req, res) => {
     console.log("GET/ recipients");
     try {
-        const recipients = await messagesModel.getConversationUsers(req.params.id_user);
+        const recipients = await messagesModel.getRecipients(req.params.id_user);
+        if(recipients.length === 0)
+            return res.sendStatus(404).end();
+        return res.json(recipients);
+    } catch (e) {
+        res.sendStatus(502);
+    }
+});
+
+router.get("/sender/:id_recipient", authorizeUser, async (req, res) => {
+    console.log("GET/ recipients");
+    try {
+        const recipients = await messagesModel.getSender(req.params.id_recipient);
         if(recipients.length === 0)
             return res.sendStatus(404).end();
         return res.json(recipients);

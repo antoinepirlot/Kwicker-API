@@ -45,16 +45,31 @@ class Messages {
     }
 
     /**
-     * Getting all users the sender talked with
+     * Getting all senders
      * @param id_sender
      * @returns {Promise<number|*>}
      */
-    async getConversationUsers(id_sender) {
+    async getSender(id_recipient) {
+        const query = {
+            text: `SELECT DISTINCT id_sender
+                   FROM kwicker.messages
+                   WHERE id_recipient = $1`,
+            values: [id_recipient]
+        };
+        try {
+            const {rows} = await db.query(query);
+            return rows;
+        } catch (e) {
+            console.log(e.stack);
+            throw new Error("Error while getting all users the sender talked with");
+        }
+    }
+
+    async getRecipients(id_sender) {
         const query = {
             text: `SELECT DISTINCT id_recipient
                    FROM kwicker.messages
-                   WHERE id_sender = $1
-                      OR id_recipient = $1`,
+                   WHERE id_sender = $1`,
             values: [id_sender]
         };
         try {
