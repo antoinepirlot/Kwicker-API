@@ -85,6 +85,17 @@ class Messages {
         }
     }
 
+    /*
+    *
+    *  ██████╗░░█████╗░░██████╗████████╗
+    *  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+    *  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+    *  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+    *  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+    *  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+    *
+    **/
+
     /**
      * Insert a message between 2 users into the database
      * @param id_sender
@@ -96,7 +107,7 @@ class Messages {
         const query = {
             text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
                    VALUES ($1, $2, $3)`,
-            values: [escape(id_sender), escape(id_recipient), encrypt(escape(message))] //escape for message is in crypt.js wjile decrypt
+            values: [id_sender, id_recipient, encrypt(message)]
         };
         try {
             const result = await db.query(query);

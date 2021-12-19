@@ -1,5 +1,4 @@
 const db = require("../db/db");
-const escape = require("escape-html");
 
 class Posts {
 
@@ -197,7 +196,7 @@ class Posts {
                    VALUES ($1, $2, $3, $4)`,
             values: [body.id_user,
                      body.image,
-                     escape(body.message),
+                     body.message,
                      body.parent_post]
         };
         try {
@@ -228,8 +227,8 @@ class Posts {
     async updatePost(id_post, body) {
         const query = {
             text: "UPDATE kwicker.posts SET image = $1, message = $2 WHERE id_post = $3",
-            values: [escape(body.image),
-                     escape(body.message),
+            values: [body.image,
+                     body.message,
                      id_post]
         } ;
         try {
