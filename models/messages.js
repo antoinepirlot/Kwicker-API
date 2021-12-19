@@ -51,11 +51,9 @@ class Messages {
      */
     async getConversationUsers(id_sender) {
         const query = {
-            text: `SELECT DISTINCT id_recipient,
-                                   id_message
+            text: `SELECT DISTINCT id_recipient
                    FROM kwicker.messages
-                   WHERE id_sender = $1
-                   ORDER BY id_message`,
+                   WHERE id_sender = $1`,
             values: [id_sender]
         };
         try {
@@ -87,6 +85,17 @@ class Messages {
         }
     }
 
+    /*
+    *
+    *  ██████╗░░█████╗░░██████╗████████╗
+    *  ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+    *  ██████╔╝██║░░██║╚█████╗░░░░██║░░░
+    *  ██╔═══╝░██║░░██║░╚═══██╗░░░██║░░░
+    *  ██║░░░░░╚█████╔╝██████╔╝░░░██║░░░
+    *  ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
+    *
+    **/
+
     /**
      * Insert a message between 2 users into the database
      * @param id_sender
@@ -98,7 +107,7 @@ class Messages {
         const query = {
             text: `INSERT INTO kwicker.messages (id_sender, id_recipient, message)
                    VALUES ($1, $2, $3)`,
-            values: [escape(id_sender), escape(id_recipient), encrypt(escape(message))] //escape for message is in crypt.js wjile decrypt
+            values: [id_sender, id_recipient, encrypt(message)]
         };
         try {
             const result = await db.query(query);

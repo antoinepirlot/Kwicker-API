@@ -35,7 +35,7 @@ class Follows {
             returnValue = false;
         } else {
             query.text = "INSERT INTO kwicker.follows VALUES ($1, $2)";
-            query.values = [escape(body.id_user_followed), escape(body.id_user_follower)];
+            query.values = [body.id_user_followed, body.id_user_follower];
         }
 
         try {

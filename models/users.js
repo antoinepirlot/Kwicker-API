@@ -180,7 +180,7 @@ class Users {
     const query = {
       name: 'insert-user',
       text: 'INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, $4, NULL, $5, DEFAULT, DEFAULT, NULL, DEFAULT)',
-      values: [escape(body.forename), escape(body.lastname), escape(body.email), escape(body.username), hashedPassword]
+      values: [body.forename, body.lastname, body.email, body.username, hashedPassword]
     };
     try {
       const result = await db.query(query);
@@ -236,7 +236,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET forename = $1
              WHERE id_user = $2`,
-      values: [escape(forename), id]
+      values: [forename, id]
     };
     try {
       return await db.query(query) != null;
@@ -251,7 +251,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET lastname = $1
              WHERE id_user = $2`,
-      values: [escape(lastname), id]
+      values: [lastname, id]
     };
     try {
       return await db.query(query) != null;
@@ -266,7 +266,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET biography = $1
              WHERE id_user = $2`,
-      values: [escape(biography), id]
+      values: [biography, id]
     };
 
     try {
@@ -283,7 +283,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET image = $1
              WHERE id_user = $2`,
-      values: [escape(image), id]
+      values: [image, id]
     };
     try {
       const { rows } = await db.query(query);

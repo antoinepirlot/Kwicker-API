@@ -1,5 +1,4 @@
 const db = require("../db/db");
-const escape = require("escape-html");
 
 class Likes {
     /**
@@ -29,7 +28,7 @@ class Likes {
                           id_post
                    FROM kwicker.likes
                    WHERE id_user = $1`,
-            values: [escape(id_user)]
+            values: [id_user]
         };
         try {
             const {rows} = await db.query(query);
@@ -46,7 +45,7 @@ class Likes {
                           id_post
                    FROM kwicker.likes
                    WHERE id_post = $1`,
-            values: [escape(id_post)]
+            values: [id_post]
         };
         try{
             const {rows} = await db.query(query);
@@ -65,7 +64,7 @@ class Likes {
     async addLike(body) {
         const query = {
             text: "INSERT INTO kwicker.likes VALUES ($1, $2)",
-            values: [escape(body.id_user), escape(body.id_post)]
+            values: [body.id_user, body.id_post]
         };
         try {
             await db.query(query)
@@ -101,7 +100,7 @@ class Likes {
             returnValue = false;
         } else {
             query.text = "INSERT INTO kwicker.likes VALUES ($1, $2)";
-            query.values = [escape(body.id_user), escape(body.id_post)];
+            query.values = [body.id_user, body.id_post];
         }
 
         try {
