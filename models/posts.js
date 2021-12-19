@@ -27,7 +27,7 @@ class Posts {
                               date_creation,
                               number_of_likes
                        FROM kwicker.posts
-                       ORDER BY id_post`;
+                       ORDER BY id_post DESC`;
         try {
             const {rows} = await db.query(query);
             return rows;
