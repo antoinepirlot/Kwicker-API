@@ -20,7 +20,7 @@ router.get("/getMessages/:id_sender/:id_recipient", authorizeUser, async (req, r
     console.log("GET/ messages");
     try {
         const messages = await messagesModel.getMessages(req.params.id_sender, req.params.id_recipient);
-        if(!messages)
+        if(messages.length === 0)
             return res.sendStatus(404).end();
         return res.json(messages);
     } catch (e) {
@@ -31,10 +31,22 @@ router.get("/getMessages/:id_sender/:id_recipient", authorizeUser, async (req, r
 router.get("/recipients/:id_sender", authorizeUser, async (req, res) => {
     console.log("GET/ recipients");
     try {
-        const messages = await messagesModel.getConversationUsers(req.params.id_sender);
-        if(!messages)
+        const recipients = await messagesModel.getConversationUsers(req.params.id_sender);
+        if(recipients.length === 0)
             return res.sendStatus(404).end();
-        return res.json(messages);
+        return res.json(recipients);
+    } catch (e) {
+        res.sendStatus(502);
+    }
+});
+
+router.get("/lastConversationWith/:id_sender", authorizeUser, async (req, res) => {
+    console.log("GET/ lastConversationWith");
+    try {
+        const recipient = await messagesModel.getLastConversationWith(req.params.id_sender);
+        if(!recipient)
+            return res.sendStatus(404).end();
+        return res.json(recipient);
     } catch (e) {
         res.sendStatus(502);
     }
@@ -53,6 +65,11 @@ router.get("/recipients/:id_sender", authorizeUser, async (req, res) => {
 
 router.post("/", authorizeUser, async (req, res) => {
     const body = req.body;
+    if(!body ||
+        (body.hasOwnProperty("id_sender") && body.id_sender == "") ||
+        (body.hasOwnProperty("id_recipient") && body.id_recipient == "") ||
+        (body.hasOwnProperty("message") && body.message == ""))
+        return res.sendStatus(400).end();
     try {
         const rowCount = await messagesModel.sendMessage(body.id_sender, body.id_recipient, body.message);
         if(rowCount === 0)

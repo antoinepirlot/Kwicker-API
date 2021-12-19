@@ -26,6 +26,6 @@ Content-Type: application/json
   "message": "Yo mon reuf"
 }
 
-### GET all recipients
-GET {{host}}/messages/recipients/1
+###
+GET {{host}}/messages/lastConversationWith/1
 Authorization: {{token}}

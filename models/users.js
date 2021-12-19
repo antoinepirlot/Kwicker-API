@@ -35,12 +35,24 @@ class Users {
   }
 
   async getAllUsersSimilarTo(search) {
-    const query = `SELECT id_user, forename, lastname, email, username, image, is_active, is_admin, biography, date_creation 
-                    FROM kwicker.users
-                    WHERE (lower(forename) LIKE $1 OR lower(lastname) LIKE $1 OR lower(username) LIKE $1)
-                    AND is_active = TRUE`
+    const query = {
+      text: `SELECT id_user,
+                    forename,
+                    lastname,
+                    email,
+                    username,
+                    image,
+                    is_active,
+                    is_admin,
+                    biography,
+                    date_creation
+             FROM kwicker.users
+             WHERE (lower(forename) LIKE $1 OR lower(lastname) LIKE $1 OR lower(username) LIKE $1)
+               AND is_active = TRUE`,
+      values: [search + '%']
+    };
     try {
-      const { rows } = await db.query(query, [search + '%']);
+      const { rows } = await db.query(query);
       return rows;
     } catch (e) {
       return false;
@@ -48,10 +60,24 @@ class Users {
   }
 
   async getUserById(id) {
-    const query = `SELECT id_user, forename, lastname, email, username, image, password, is_active, is_admin, biography, date_creation 
-                    FROM kwicker.users u WHERE u.id_user = $1`;
+    const query = {
+      text: `SELECT id_user,
+                    forename,
+                    lastname,
+                    email,
+                    username,
+                    image,
+                    password,
+                    is_active,
+                    is_admin,
+                    biography,
+                    date_creation
+             FROM kwicker.users u
+             WHERE u.id_user = $1`,
+      values: [id]
+    };
     try {
-      const { rows } = await db.query(query, [id]);
+      const { rows } = await db.query(query);
       return rows[0];
     } catch (e) {
       console.log(e.stack);
@@ -60,10 +86,23 @@ class Users {
   }
 
   async getUserByUsername(username) {
-    const query = `SELECT id_user, forename, lastname, email, username, password, is_active, is_admin, biography, date_creation 
-                   FROM kwicker.users WHERE username = $1`;
+    const query = {
+      text: `SELECT id_user,
+                    forename,
+                    lastname,
+                    email,
+                    username,
+                    password,
+                    is_active,
+                    is_admin,
+                    biography,
+                    date_creation
+             FROM kwicker.users
+             WHERE username = $1`,
+      values: [username]
+    };
     try {
-      const { rows } = await db.query(query, [username]);
+      const { rows } = await db.query(query);
       if (!rows || rows.length === 0) return;
       return rows[0];
     } catch (e) {
@@ -73,11 +112,22 @@ class Users {
   }
 
   async getProfileInformationsById(id) {
-    const query = `SELECT id_user, forename, lastname, email, username, is_active, is_admin, biography, date_creation 
-                   FROM kwicker.users WHERE id_user = $1`;
+    const query = {
+      text: `SELECT id_user,
+                    forename,
+                    lastname,
+                    email,
+                    username,
+                    is_active,
+                    is_admin,
+                    biography,
+                    date_creation
+             FROM kwicker.users
+             WHERE id_user = $1`,
+      values: [id]
+    };
     try {
-      const { rows } = await db.query(query, [id]);
-
+      const { rows } = await db.query(query);
       if (!rows || rows.length === 0) return;
       return rows[0];
     } catch (e) {
@@ -99,9 +149,14 @@ class Users {
 **/
 
   async deleteUser(id) {
-    const query = `UPDATE kwicker.users SET is_active = FALSE WHERE id_user = $1`;
+    const query = {
+      text: `UPDATE kwicker.users
+             SET is_active = FALSE
+             WHERE id_user = $1`,
+      values: [id]
+    }
     try {
-      const { rows } = await db.query(query, [id]);
+      const { rows } = await db.query(query);
       return rows[0];
     } catch (e) {
       return false;
@@ -125,7 +180,7 @@ class Users {
     const query = {
       name: 'insert-user',
       text: 'INSERT INTO kwicker.users VALUES (DEFAULT, $1, $2, $3, $4, NULL, $5, DEFAULT, DEFAULT, NULL, DEFAULT)',
-      values: [body.forename, body.lastname, body.email, body.username, hashedPassword],
+      values: [body.forename, body.lastname, body.email, body.username, hashedPassword]
     };
     try {
       const result = await db.query(query);
@@ -177,9 +232,14 @@ class Users {
 **/
 
   async updateUserForename(id, forename) {
-    const query = `UPDATE kwicker.users SET forename = $1 WHERE id_user = $2`;
+    const query = {
+      text: `UPDATE kwicker.users
+             SET forename = $1
+             WHERE id_user = $2`,
+      values: [forename, id]
+    };
     try {
-      return await db.query(query, [forename, id]) != null;
+      return await db.query(query) != null;
     } catch (e) {
       console.log(e.stack);
       return false;
@@ -187,9 +247,14 @@ class Users {
   }
 
   async updateUserLastname(id, lastname) {
-    const query = `UPDATE kwicker.users SET lastname = $1 WHERE id_user = $2`;
+    const query = {
+      text: `UPDATE kwicker.users
+             SET lastname = $1
+             WHERE id_user = $2`,
+      values: [lastname, id]
+    };
     try {
-      return await db.query(query, [lastname, id]) != null;
+      return await db.query(query) != null;
     } catch (e) {
       console.log(e.stack);
       return false;
@@ -197,11 +262,15 @@ class Users {
   }
 
   async updateUserBiography(id, biography) {
-    const query = `UPDATE kwicker.users SET biography = $1 WHERE id_user = $2`;
+    const query = {
+      text: `UPDATE kwicker.users
+             SET biography = $1
+             WHERE id_user = $2`,
+      values: [biography, id]
+    };
+
     try {
-      let biographyUser = biography;
-      if (!biographyUser.trim()) biographyUser = null;
-      return await db.query(query, [biographyUser, id]) != null;
+      return await db.query(query);
     } catch (e) {
       console.log(e.stack);
       return false;
@@ -210,9 +279,14 @@ class Users {
 
 
   async updateUserImage(id, image) {
-    const query = `UPDATE kwicker.users SET image = $1 WHERE id_user = $2`;
+    const query = {
+      text: `UPDATE kwicker.users
+             SET image = $1
+             WHERE id_user = $2`,
+      values: [image, id]
+    };
     try {
-      const { rows } = await db.query(query, [image, id]);
+      const { rows } = await db.query(query);
       return rows;
     } catch (e) {
       console.log(e.stack);
@@ -230,7 +304,7 @@ class Users {
       text: `UPDATE kwicker.users
              SET is_active = TRUE
              WHERE id_user = $1`,
-      values: [escape(id_user)]
+      values: [id_user]
     };
     try{
       const result = await db.query(query);

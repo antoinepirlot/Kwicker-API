@@ -1,5 +1,4 @@
 const db = require("../db/db");
-const escape = require("escape-html");
 
 class Likes {
     /**
@@ -29,7 +28,7 @@ class Likes {
                           id_post
                    FROM kwicker.likes
                    WHERE id_user = $1`,
-            values: [escape(id_user)]
+            values: [id_user]
         };
         try {
             const {rows} = await db.query(query);
@@ -46,7 +45,7 @@ class Likes {
                           id_post
                    FROM kwicker.likes
                    WHERE id_post = $1`,
-            values: [escape(id_post)]
+            values: [id_post]
         };
         try{
             const {rows} = await db.query(query);
@@ -65,7 +64,7 @@ class Likes {
     async addLike(body) {
         const query = {
             text: "INSERT INTO kwicker.likes VALUES ($1, $2)",
-            values: [escape(body.id_user), escape(body.id_post)]
+            values: [body.id_user, body.id_post]
         };
         try {
             await db.query(query)
@@ -89,16 +88,23 @@ class Likes {
     }
 
     async toggleLike(body) {
-        let query = "INSERT INTO kwicker.likes VALUES ($1, $2)";
+        let query = {
+            text: "",
+            values: []
+        };
         let returnValue = true;
 
         if (await this.existLike(body)) {
-            query = "DELETE FROM kwicker.likes WHERE id_user = $1 AND id_post = $2";
+            query.text = "DELETE FROM kwicker.likes WHERE id_user = $1 AND id_post = $2";
+            query.values = [body.id_user, body.id_post];
             returnValue = false;
+        } else {
+            query.text = "INSERT INTO kwicker.likes VALUES ($1, $2)";
+            query.values = [body.id_user, body.id_post];
         }
 
         try {
-            await db.query(query, [body.id_user, body.id_post]);
+            await db.query(query);
             return returnValue;
         } catch (e) {
             console.log(e.stack);
@@ -113,7 +119,7 @@ class Likes {
                    FROM kwicker.likes
                    WHERE id_user = $1
                      AND id_post = $2`,
-            values: [escape(body.id_user), escape(body.id_post)]
+            values: [body.id_user, body.id_post]
         };
         try {
             const result = db.query(query);

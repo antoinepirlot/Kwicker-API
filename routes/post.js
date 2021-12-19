@@ -99,6 +99,9 @@ router.post("/", authorizeUser, async (req, res) => {
 });
 
 router.post("/homepage", authorizeUser, async (req, res) => {
+    if(!req.body ||
+        (req.body.hasOwnProperty("id_user") && req.body.id_user == ""))
+        return res.sendStatus(400).end();
     try {
         const posts = await postsModel.getHomePosts(req.body.id_user);
         return res.json(posts);
@@ -123,15 +126,16 @@ router.post("/homepage", authorizeUser, async (req, res) => {
  */
 router.put("/:id_post", authorizeUser, async function (req, res) {
     console.log("PUT/ Update a post");
-    if (!req.body || !req.body.message)
-        return res.sendStatus(400);
+    if (!req.body ||
+        (req.body.hasOwnProperty("message") && req.body.message == ""))
+        return res.sendStatus(400).end();
     try {
         const rowCount = await postsModel.updatePost(req.params.id_post, req.body);
         if (rowCount === 0)
-            return res.sendStatus(404);
-        return res.sendStatus(200);
+            return res.sendStatus(404).end();
+        return res.sendStatus(200).end();
     } catch (e) {
-        return res.sendStatus(502);
+        return res.sendStatus(502).end();
     }
 });
 
@@ -146,7 +150,7 @@ router.put("/activate/:id_post", authorizeAdmin, async function (req, res) {
             return res.sendStatus(404).end();
         return res.sendStatus(200).end();
     } catch (e) {
-        return res.sendStatus(502);
+        return res.sendStatus(502).end();
     }
 });
 
@@ -169,10 +173,10 @@ router.delete("/:id_post", authorizeUser, async (req, res) => {
     try {
         const rowCount = await removePost(req.params.id_post);
         if (rowCount === 0)
-            return res.sendStatus(404);
-        return res.sendStatus(200);
+            return res.sendStatus(404).end();
+        return res.sendStatus(200).end();
     } catch (e) {
-        res.sendStatus(502);
+        res.sendStatus(502).end();
     }
 });
 
@@ -182,9 +186,9 @@ router.delete("/admin/:id_post", authorizeAdmin, async (req, res) => {
         const rowCount = await removePost(req.params.id_post);
         if(rowCount === 0)
             return res.sendStatus(404).end();
-        return res.sendStatus(200);
+        return res.sendStatus(200).end();
     } catch (e) {
-        res.sendStatus(502);
+        res.sendStatus(502).end();
     }
 });
 
